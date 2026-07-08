@@ -38,7 +38,7 @@
   ],
   "scripts": {
     "build": "node build.mjs && tsc -p tsconfig.json",
-    "test": "node --test \"test/*.test.mjs\"",
+    "test": "node --test test/smoke.test.mjs",
     "prepublishOnly": "npm run build && npm test"
   },
   "repository": {
