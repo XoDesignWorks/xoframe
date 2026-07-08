@@ -5,7 +5,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/) and the proje
 
 ## [0.1.0] — 2026-07-08
 
-First public release of `@xoframe/core`.
+First public release of `@xodesign/xoframe`.
 
 ### Added
 - Lazy loading for `<img>`, `<picture>`/`srcset`, background images (`data-xo-bg`) and content block reveal (`data-xo-block`)
@@ -20,8 +20,8 @@ First public release of `@xoframe/core`.
 - Bubbling events `xo:beforeload` / `xo:load` / `xo:error` / `xo:reveal` / `xo:visible` + callbacks
 - Lazy `<video>` (deferred `data-poster`/`data-src`/`<source>`, reveal on `loadeddata`) and lazy `<iframe>` through the same pipeline
 - `intent` strategy: load on first hover/focus/touch — for tabs, dropdowns and interaction-gated galleries
-- Embed facades (`@xoframe/core/embed`, separate ~1.7 KB file): click-to-load YouTube (`youtube-nocookie`) / Vimeo / generic iframes with auto poster, keyboard access and hover `preconnect`
-- Dev-only debug overlay (`@xoframe/core/debug`): live CLS/LCP panel, layout-shift culprit flashing, lazy-LCP warning, missing-dimensions audit
+- Embed facades (`@xodesign/xoframe/embed`, separate ~1.7 KB file): click-to-load YouTube (`youtube-nocookie`) / Vimeo / generic iframes with auto poster, keyboard access and hover `preconnect`
+- Dev-only debug overlay (`@xodesign/xoframe/debug`): live CLS/LCP panel, layout-shift culprit flashing, lazy-LCP warning, missing-dimensions audit
 - Builds: ESM, CJS, UMD, minified IIFE for CDN (opt-in auto-init via `data-xo-auto`), TypeScript types, optional CSS
 - CI-enforced size budget: core ≤ 3 KB gzip (currently ~2.4 KB)
 - Graceful fallbacks: no IntersectionObserver → load immediately; SSR-safe no-op

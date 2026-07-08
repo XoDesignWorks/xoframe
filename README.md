@@ -21,12 +21,12 @@ reserve space → show placeholder → choose priority → load media → reveal
 
 | Package | Status | Description |
 | --- | --- | --- |
-| [`@xoframe/core`](packages/core) | ✅ v0.1.0 | Free core: lazy images/`<video>`/`<iframe>`, `<picture>`/srcset, backgrounds, block reveal, LCP-aware mode, zero-markup auto mode, intent strategy. ~2.5 KB gzip. Ships embed facades (click-to-load YouTube/Vimeo, ~1.7 KB) and a dev-only debug overlay (live CLS/LCP guard) as separate files. |
+| [`@xodesign/xoframe`](packages/core) | ✅ v0.1.0 | Free core: lazy images/`<video>`/`<iframe>`, `<picture>`/srcset, backgrounds, block reveal, LCP-aware mode, zero-markup auto mode, intent strategy. ~2.5 KB gzip. Ships embed facades (click-to-load YouTube/Vimeo, ~1.7 KB) and a dev-only debug overlay (live CLS/LCP guard) as separate files. |
 | [XOframe for WordPress](packages/wordpress/xoframe) | 🧪 MVP, untested on live WP | Zero-config plugin: rewrites content images on the fly, dominant-color placeholders via GD, piggybacks on WP's LCP heuristics. Build assets with `npm run build:wp`. |
-| `@xoframe/blurhash` | planned (Pro) | BlurHash placeholder decoding |
-| `@xoframe/thumbhash` | planned (Pro) | ThumbHash placeholder decoding |
-| `@xoframe/masonry` | planned (Pro) | Zero-CLS masonry/grid galleries |
-| `@xoframe/react` / `vue` / `svelte` | planned (Pro) | Framework components |
+| `@xodesign/xoframe-blurhash` | planned (Pro) | BlurHash placeholder decoding |
+| `@xodesign/xoframe-thumbhash` | planned (Pro) | ThumbHash placeholder decoding |
+| `@xodesign/xoframe-masonry` | planned (Pro) | Zero-CLS masonry/grid galleries |
+| `@xodesign/xoframe-react` / `vue` / `svelte` | planned (Pro) | Framework components |
 
 ## Development
 

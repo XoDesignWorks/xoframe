@@ -1,4 +1,4 @@
-# @xoframe/core
+# @xodesign/xoframe
 
 **Zero-CLS progressive media loading for modern websites.**
 
@@ -14,12 +14,12 @@ Make image-heavy pages feel instant: reserve space → show placeholder → choo
 ## Install
 
 ```bash
-npm install @xoframe/core
+npm install @xodesign/xoframe
 ```
 
 ```js
-import { XOframe } from '@xoframe/core'
-import '@xoframe/core/styles.css'
+import { XOframe } from '@xodesign/xoframe'
+import '@xodesign/xoframe/styles.css'
 
 XOframe.init()
 ```
@@ -27,8 +27,8 @@ XOframe.init()
 Or via CDN (add `data-xo-auto` for automatic init):
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@xoframe/core/dist/xoframe.css">
-<script src="https://unpkg.com/@xoframe/core/dist/xoframe.min.js" data-xo-auto></script>
+<link rel="stylesheet" href="https://unpkg.com/@xodesign/xoframe/dist/xoframe.css">
+<script src="https://unpkg.com/@xodesign/xoframe/dist/xoframe.min.js" data-xo-auto></script>
 ```
 
 ## Quick start
@@ -109,7 +109,7 @@ The poster reserves the box and stays visible; the file loads near the viewport.
 ### Embed facades — the biggest byte win
 
 A YouTube embed costs ~1 MB of JavaScript before the user presses play. The facade module
-(`@xoframe/core/embed`, separate ~1.7 KB file, never part of the core bundle) shows a poster +
+(`@xodesign/xoframe/embed`, separate ~1.7 KB file, never part of the core bundle) shows a poster +
 play button and injects the real iframe only on click, with automatic `preconnect` on hover:
 
 ```html
@@ -119,7 +119,7 @@ play button and injects the real iframe only on click, with automatic `preconnec
 ```
 
 ```js
-import { XOframeEmbed } from '@xoframe/core/embed'
+import { XOframeEmbed } from '@xodesign/xoframe/embed'
 XOframeEmbed.init()
 ```
 
@@ -231,7 +231,7 @@ on-page panel, flashes the elements that caused each layout shift, flags images 
 dimensions, and warns when your LCP image was lazy-loaded:
 
 ```js
-import { XOframeDebug } from '@xoframe/core/debug'
+import { XOframeDebug } from '@xodesign/xoframe/debug'
 XOframeDebug.init()
 ```
 
