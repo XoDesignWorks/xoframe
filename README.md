@@ -1,10 +1,21 @@
 # XOframe
 
+[![CI](https://github.com/XoDesignWorks/xoframe/actions/workflows/ci.yml/badge.svg)](https://github.com/XoDesignWorks/xoframe/actions/workflows/ci.yml)
+
 Zero-CLS progressive media loading. Monorepo for the XOframe library family.
 
 ```text
 reserve space → show placeholder → choose priority → load media → reveal smoothly → prevent layout shift
 ```
+
+**Measured on the same landing page** ([demo/compare.html](demo/compare.html), local Lighthouse run):
+
+| Metric | Before | After (XOframe) |
+| --- | --- | --- |
+| Cumulative Layout Shift | 0.324 | **0** |
+| Page weight (initial load) | 959 KB | **486 KB (−49%)** |
+| Network requests | 35 | **13** |
+| Lighthouse performance | 69 | **88** |
 
 ## Packages
 

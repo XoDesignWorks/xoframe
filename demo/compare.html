@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — before/after comparison</title>
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    table.cmp { border-collapse: collapse; width: 100%; max-width: 640px; margin: 24px 0; }
+    table.cmp th, table.cmp td { text-align: left; padding: 10px 16px; border-bottom: 1px solid #e5e2dc; }
+    table.cmp td.good { color: #0a7d43; font-weight: 700; }
+    table.cmp td.bad { color: #c02b1d; }
+    .links a { display: inline-block; margin-right: 16px; font-weight: 600; color: #6b5cff; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>before / after</span></header>
+  <main>
+    <h2>The same landing page, measured</h2>
+    <p class="note">Two identical pages: one written the way image-heavy sites usually are
+    (no dimensions, lazy hero, everything eager), one with XOframe markup. Numbers below are a
+    representative local Lighthouse run (mobile emulation, performance category); absolute values
+    vary with network, the relationship doesn't.</p>
+
+    <table class="cmp">
+      <tr><th>Metric</th><th>Before</th><th>After (XOframe)</th></tr>
+      <tr><td>Cumulative Layout Shift</td><td class="bad">0.324</td><td class="good">0</td></tr>
+      <tr><td>Largest Contentful Paint</td><td class="bad">4.4 s</td><td class="good">3.9 s</td></tr>
+      <tr><td>Page weight (initial load)</td><td class="bad">959 KB</td><td class="good">486 KB (−49%)</td></tr>
+      <tr><td>Network requests</td><td class="bad">35</td><td class="good">13</td></tr>
+      <tr><td>Lighthouse performance</td><td class="bad">69</td><td class="good">88</td></tr>
+    </table>
+
+    <p class="links">
+      <a href="before.html">Open “before” page →</a>
+      <a href="after.html">Open “after” page →</a>
+    </p>
+
+    <p class="note">Reproduce it yourself: <code>npm run demo</code>, then run Lighthouse on
+    <code>/demo/before.html</code> and <code>/demo/after.html</code>. Scroll both pages with
+    DevTools → Network open — the difference is visible without any tooling.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>After — the same landing on XOframe</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    .content img { width: 100%; height: auto; display: block; border-radius: 8px; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="compare.html">XOframe</a></h1><span>AFTER — same page, XOframe markup</span></header>
+  <main class="content">
+    <!-- Hero: eager + fetchpriority=high, gradient placeholder -->
+    <img data-xo data-xo-priority="high"
+         data-src="https://picsum.photos/seed/cmp-hero/1600/900"
+         data-gradient="#5d6b7a,#8fa3b8,#3f4a56,#6d7b8d"
+         width="1600" height="900" alt="Hero">
+    <h2>A beautiful product story</h2>
+    <p>Same content, same images. Dimensions are declared, placeholders reserve
+    the exact space, and nothing below the fold loads until you scroll.</p>
+
+    <img data-xo data-src="https://picsum.photos/seed/cmp-a/1200/700" data-color="#a89f91" width="1200" height="700" alt="">
+    <p>This paragraph never moves.</p>
+    <img data-xo data-src="https://picsum.photos/seed/cmp-b/1200/500" data-color="#91a8a0" width="1200" height="500" alt="">
+    <h2>Gallery</h2>
+    <div class="gallery" id="gallery"></div>
+    <h2>Closing section</h2>
+    <img data-xo data-src="https://picsum.photos/seed/cmp-c/1200/600" data-color="#8fa3b8" width="1200" height="600" alt="">
+    <p>The end. Check DevTools: only above-the-fold images were downloaded.</p>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script>
+    const g = document.getElementById('gallery')
+    for (let i = 1; i <= 12; i++) {
+      g.insertAdjacentHTML('beforeend',
+        `<img data-xo data-src="https://picsum.photos/seed/cmp-g${i}/600/400" data-color="hsl(${i * 30}, 15%, 78%)" width="600" height="400" alt="">`)
+    }
+    XOframe.init()
+  </script>
+</body>
+</html>

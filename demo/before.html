@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Before — a typical image-heavy landing</title>
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    /* Typical theme CSS: images stretched by width only — height unknown until load */
+    .content img { width: 100%; height: auto; display: block; border-radius: 8px; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="compare.html">XOframe</a></h1><span>BEFORE — the usual mistakes</span></header>
+  <main class="content">
+    <!-- Mistake 1: hero is lazy-loaded (kills LCP) -->
+    <img src="https://picsum.photos/seed/cmp-hero/1600/900" loading="lazy" alt="Hero">
+    <h2>A beautiful product story</h2>
+    <p>Every image below loads eagerly and none of them declare dimensions,
+    so the text you are reading right now will jump around as they arrive.</p>
+
+    <!-- Mistake 2: no width/height anywhere (CLS), Mistake 3: everything eager (bandwidth) -->
+    <img src="https://picsum.photos/seed/cmp-a/1200/700" alt="">
+    <p>Some paragraph that jumps when the image above loads.</p>
+    <img src="https://picsum.photos/seed/cmp-b/1200/500" alt="">
+    <h2>Gallery</h2>
+    <div class="gallery">
+      <img src="https://picsum.photos/seed/cmp-g1/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g2/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g3/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g4/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g5/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g6/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g7/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g8/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g9/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g10/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g11/600/400" alt="">
+      <img src="https://picsum.photos/seed/cmp-g12/600/400" alt="">
+    </div>
+    <h2>Closing section</h2>
+    <img src="https://picsum.photos/seed/cmp-c/1200/600" alt="">
+    <p>The end. Check DevTools: every image above was downloaded up front.</p>
+  </main>
+</body>
+</html>
