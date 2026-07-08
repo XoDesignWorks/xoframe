@@ -95,6 +95,46 @@ XOframe.auto()
 - every image gets reveal classes and `xo:*` events;
 - nothing else in your HTML changes. Exclude an image with `data-xo-skip`.
 
+### Video and iframes
+
+The same pipeline handles `<video>` and `<iframe>`:
+
+```html
+<video data-xo data-poster="poster.jpg" data-src="clip.mp4" data-ratio="16/9" controls muted playsinline></video>
+<iframe data-xo data-src="https://example.com/widget" data-ratio="16/9" title="Widget"></iframe>
+```
+
+The poster reserves the box and stays visible; the file loads near the viewport.
+
+### Embed facades — the biggest byte win
+
+A YouTube embed costs ~1 MB of JavaScript before the user presses play. The facade module
+(`@xoframe/core/embed`, separate ~1.7 KB file, never part of the core bundle) shows a poster +
+play button and injects the real iframe only on click, with automatic `preconnect` on hover:
+
+```html
+<div data-xo-embed="youtube" data-video="aqz-KE-bpKQ" data-title="Big Buck Bunny"></div>
+<div data-xo-embed="vimeo" data-video="76979871" data-poster="poster.jpg"></div>
+<div data-xo-embed data-embed-src="https://example.com/embed" data-poster="poster.jpg"></div>
+```
+
+```js
+import { XOframeEmbed } from '@xoframe/core/embed'
+XOframeEmbed.init()
+```
+
+Keyboard-accessible (`role="button"`, Enter/Space), YouTube goes through `youtube-nocookie.com`,
+fires a bubbling `xo:embed` event on activation.
+
+### Intent strategy
+
+`data-xo-strategy="intent"` loads media on the first hover/focus/touch instead of scroll —
+ideal for tab panels, dropdown previews and galleries behind interaction:
+
+```html
+<img data-xo data-xo-strategy="intent" data-src="preview.jpg" width="1200" height="600" alt="">
+```
+
 ### Background images
 
 ```html
@@ -162,7 +202,8 @@ document.addEventListener('xo:load', (e) => console.log(e.detail.element))
 
 | Attribute | Applies to | Meaning |
 | --- | --- | --- |
-| `data-xo` | `img`, `picture` | Managed image |
+| `data-xo` | `img`, `picture`, `video`, `iframe` | Managed media element |
+| `data-poster` | `video` | Deferred poster image |
 | `data-src` / `data-srcset` | `img`, `source` | Deferred sources |
 | `data-sizes` | `img` | `sizes` value, or `auto` to compute from layout width |
 | `data-ratio` | any | Aspect ratio, e.g. `16/9` |
@@ -170,6 +211,8 @@ document.addEventListener('xo:load', (e) => console.log(e.detail.element))
 | `data-gradient` | any | 4-corner gradient placeholder (`#c1,#c2,#c3,#c4`) |
 | `data-xo-priority="high"` | `img` | Eager + `fetchpriority=high` |
 | `data-xo-strategy="manual"` | any | Load only via API |
+| `data-xo-strategy="intent"` | any | Load on first hover/focus/touch |
+| `data-xo-embed` + `data-video` | any | Click-to-load embed facade (embed module) |
 | `data-xo-bg` + `data-bg` | any | Lazy background image |
 | `data-xo-block` | any | Content block reveal |
 

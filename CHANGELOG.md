@@ -18,6 +18,9 @@ First public release of `@xoframe/core`.
 - `networkAware` option (default on): Save-Data / 2G connections get no fade and in-viewport-only loading
 - Full API: `init`, `auto`, `refresh`, `load`, `loadAll`, `loadInside`, `observe`, `unobserve`, `pause`, `resume`, `destroy`
 - Bubbling events `xo:beforeload` / `xo:load` / `xo:error` / `xo:reveal` / `xo:visible` + callbacks
+- Lazy `<video>` (deferred `data-poster`/`data-src`/`<source>`, reveal on `loadeddata`) and lazy `<iframe>` through the same pipeline
+- `intent` strategy: load on first hover/focus/touch — for tabs, dropdowns and interaction-gated galleries
+- Embed facades (`@xoframe/core/embed`, separate ~1.7 KB file): click-to-load YouTube (`youtube-nocookie`) / Vimeo / generic iframes with auto poster, keyboard access and hover `preconnect`
 - Dev-only debug overlay (`@xoframe/core/debug`): live CLS/LCP panel, layout-shift culprit flashing, lazy-LCP warning, missing-dimensions audit
 - Builds: ESM, CJS, UMD, minified IIFE for CDN (opt-in auto-init via `data-xo-auto`), TypeScript types, optional CSS
 - CI-enforced size budget: core ≤ 3 KB gzip (currently ~2.4 KB)

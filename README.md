@@ -21,7 +21,7 @@ reserve space → show placeholder → choose priority → load media → reveal
 
 | Package | Status | Description |
 | --- | --- | --- |
-| [`@xoframe/core`](packages/core) | ✅ v0.1.0 | Free core: lazy images, `<picture>`/srcset, backgrounds, block reveal, LCP-aware mode, zero-markup auto mode. ~2.1 KB gzip. Ships a dev-only debug overlay (live CLS/LCP guard) as a separate file. |
+| [`@xoframe/core`](packages/core) | ✅ v0.1.0 | Free core: lazy images/`<video>`/`<iframe>`, `<picture>`/srcset, backgrounds, block reveal, LCP-aware mode, zero-markup auto mode, intent strategy. ~2.5 KB gzip. Ships embed facades (click-to-load YouTube/Vimeo, ~1.7 KB) and a dev-only debug overlay (live CLS/LCP guard) as separate files. |
 | [XOframe for WordPress](packages/wordpress/xoframe) | 🧪 MVP, untested on live WP | Zero-config plugin: rewrites content images on the fly, dominant-color placeholders via GD, piggybacks on WP's LCP heuristics. Build assets with `npm run build:wp`. |
 | `@xoframe/blurhash` | planned (Pro) | BlurHash placeholder decoding |
 | `@xoframe/thumbhash` | planned (Pro) | ThumbHash placeholder decoding |

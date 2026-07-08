@@ -52,6 +52,23 @@ await build({
   outfile: 'dist/xoframe-debug.min.js'
 })
 
+// Embed facades — separate file, opt-in, never part of the core bundle
+await build({
+  ...shared,
+  entryPoints: ['src/embed.ts'],
+  format: 'esm',
+  outfile: 'dist/xoframe-embed.esm.js'
+})
+await build({
+  ...shared,
+  entryPoints: ['src/embed.ts'],
+  format: 'iife',
+  globalName: 'XOframeEmbed',
+  minify: true,
+  footer: { js: 'XOframeEmbed=XOframeEmbed.XOframeEmbed;' },
+  outfile: 'dist/xoframe-embed.min.js'
+})
+
 // UMD — wrap a minified CJS bundle
 const cjsMin = await build({
   ...shared,

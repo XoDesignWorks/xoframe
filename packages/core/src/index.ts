@@ -92,9 +92,27 @@ const warn = (msg: string, el: Element): void => {
 
 const isImg = (el: Element): el is HTMLImageElement => el.tagName === 'IMG'
 
-/** The <img> that actually loads, for both <img data-xo> and <picture data-xo>. */
-const targetImg = (el: Element): HTMLImageElement | null =>
-  isImg(el) ? el : el.querySelector('img')
+/** Structural view over <img>/<iframe>/<video> — only the members the loader touches. */
+interface MediaEl extends HTMLElement {
+  src: string
+  srcset?: string
+  sizes?: string
+  poster?: string
+  loading?: string
+  decoding?: string
+  complete?: boolean
+  naturalWidth?: number
+  decode?: () => Promise<void>
+  load?: () => void
+}
+
+/** The element that actually loads: the img inside <picture data-xo>, else the node itself. */
+const targetMedia = (el: Element): MediaEl | null => {
+  const t = el.tagName
+  return t === 'IMG' || t === 'IFRAME' || t === 'VIDEO'
+    ? (el as MediaEl)
+    : (el.querySelector('img') as MediaEl | null)
+}
 
 const kindOf = (el: Element): 'bg' | 'block' | 'img' =>
   el.hasAttribute('data-xo-bg') ? 'bg' : el.hasAttribute('data-xo-block') ? 'block' : 'img'
@@ -134,15 +152,16 @@ const prepare = (el: Element): void => {
     applyPlaceholder(el, el as HTMLElement)
     return
   }
-  const img = targetImg(el)
-  if (!img) return
-  img.decoding = 'async'
-  applyPlaceholder(el, img)
+  const media = targetMedia(el)
+  if (!media) return
+  if (media.tagName === 'IMG') media.decoding = 'async'
+  applyPlaceholder(el, media)
   el.classList.add('xo-loading')
-  // A real src present before the swap is a tiny/LQIP placeholder: keep it visible.
-  if (img.getAttribute('src')) el.classList.add('xo-lqip')
-  if (!img.getAttribute('width') && !(el as HTMLElement).dataset.ratio && !img.style.aspectRatio)
-    warn('missing width/height or data-ratio — this image may cause layout shift', el)
+  // A visible placeholder (LQIP src, or a video poster) must never be hidden pre-load.
+  if (media.getAttribute('src') || media.getAttribute('poster') || media.dataset.poster)
+    el.classList.add('xo-lqip')
+  if (!media.getAttribute('width') && !(el as HTMLElement).dataset.ratio && !media.style.aspectRatio)
+    warn('missing width/height or data-ratio — this element may cause layout shift', el)
 }
 
 const finish = (el: Element, ok: boolean, error?: unknown): void => {
@@ -183,17 +202,18 @@ const loadElement = (el: Element): void => {
     return
   }
 
-  const img = targetImg(el)
-  if (!img) return
-  const id = img.dataset
-  const swap = id.src || id.srcset
-  if (swap || !img.complete) {
-    img.addEventListener(
-      'load',
+  const media = targetMedia(el)
+  if (!media) return
+  const id = media.dataset
+  const swap = id.src || id.srcset || id.poster
+  if (swap || !media.complete) {
+    media.addEventListener(
+      media.tagName === 'VIDEO' ? 'loadeddata' : 'load',
       () => {
         // decode() off the paint path so revealing a large image never janks —
         // but only as a best effort: in hidden/background tabs Chrome defers
         // decoding indefinitely, so a timeout race guarantees the reveal.
+        // (iframe/video have no decode() and fall straight through.)
         let revealed = false
         const done = (): void => {
           if (!revealed) {
@@ -201,28 +221,32 @@ const loadElement = (el: Element): void => {
             finish(el, true)
           }
         }
-        if (img.decode) {
-          img.decode().then(done, done)
+        if (media.decode) {
+          media.decode().then(done, done)
           setTimeout(done, 250)
         } else done()
       },
       { once: true }
     )
-    img.addEventListener('error', (e) => finish(el, false, e), { once: true })
+    media.addEventListener('error', (e) => finish(el, false, e), { once: true })
   }
-  // <picture>: promote data-srcset on <source> elements first.
+  // Promote deferred <source> children (<picture> srcset, <video> src) first.
   if (!isImg(el))
     el.querySelectorAll('source').forEach((s) => {
       if (s.dataset.srcset) s.srcset = s.dataset.srcset
+      if (s.dataset.src) s.src = s.dataset.src
     })
   // data-sizes="auto": compute the sizes attribute from the actual layout width.
   if (id.sizes === 'auto')
-    img.sizes = (img.clientWidth || el.clientWidth || innerWidth) + 'px'
-  else if (id.sizes) img.sizes = id.sizes
-  if (id.srcset) img.srcset = id.srcset
-  if (id.src) img.src = id.src
+    media.sizes = (media.clientWidth || el.clientWidth || innerWidth) + 'px'
+  else if (id.sizes) media.sizes = id.sizes
+  if (id.poster) media.poster = id.poster
+  if (id.srcset) media.srcset = id.srcset
+  if (id.src) media.src = id.src
+  // <video> with promoted <source> children needs an explicit load() to re-scan them.
+  else if (media.tagName === 'VIDEO') media.load?.()
   // Native-src image that is already complete: just reveal it.
-  if (!swap && img.complete) finish(el, !!img.naturalWidth)
+  if (!swap && media.complete) finish(el, !!media.naturalWidth)
 }
 
 const revealBlock = (el: Element): void => {
@@ -268,24 +292,34 @@ const route = (el: Element): void => {
   const kind = kindOf(el)
   const d = (el as HTMLElement).dataset
   if (d.xoStrategy === 'manual') return
+  // intent: load on the first sign of user interest (hover/focus/touch).
+  if (d.xoStrategy === 'intent') {
+    const go = (): void => loadElement(el)
+    el.addEventListener('pointerenter', go, { once: true })
+    el.addEventListener('focusin', go, { once: true })
+    el.addEventListener('touchstart', go, { once: true, passive: true })
+    return
+  }
 
   if (kind === 'img') {
-    const img = targetImg(el)
-    if (!img) return
+    const media = targetMedia(el)
+    if (!media) return
     const eager =
       d.xoPriority === 'high' ||
       d.xoStrategy === 'hero' ||
-      img.getAttribute('fetchpriority') === 'high' ||
-      (settings!.lcpAware && !lcpClaimed && isLcpCandidate(img))
+      media.getAttribute('fetchpriority') === 'high' ||
+      (settings!.lcpAware && !lcpClaimed && isLcpCandidate(media as HTMLImageElement))
     // An explicit pause() wins even over LCP priority — the element is queued instead.
     if (eager && !paused) {
       lcpClaimed = true
-      img.loading = 'eager'
-      img.setAttribute('fetchpriority', 'high')
+      media.loading = 'eager'
+      media.setAttribute('fetchpriority', 'high')
       loadElement(el)
       return
     }
-    if (settings!.nativeLazy && !img.dataset.src && !img.dataset.srcset) img.loading = 'lazy'
+    // Native lazy hint for img/iframe that keep their real src.
+    if (settings!.nativeLazy && media.tagName !== 'VIDEO' && !media.dataset.src && !media.dataset.srcset)
+      media.loading = 'lazy'
   }
   observe(el)
 }

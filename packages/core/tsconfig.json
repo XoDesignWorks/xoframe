@@ -11,5 +11,5 @@
     "rootDir": "src",
     "skipLibCheck": true
   },
-  "include": ["src/index.ts", "src/debug.ts"]
+  "include": ["src/index.ts", "src/debug.ts", "src/embed.ts"]
 }

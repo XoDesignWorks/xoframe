@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — video, iframes and embed facades</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    [data-xo-embed], iframe[data-xo], video[data-xo] { width: 100%; border-radius: 8px; display: block; border: 0; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>video · iframes · embed facades · intent</span></header>
+  <main>
+    <h2>YouTube facade</h2>
+    <p class="note">The real YouTube embed costs ~1&nbsp;MB of JS before the user presses play.
+    This facade is just a poster and a button; the iframe is injected on click.
+    Hovering preconnects to YouTube so playback starts faster.</p>
+    <div data-xo-embed="youtube" data-video="aqz-KE-bpKQ" data-title="Big Buck Bunny"></div>
+
+    <div class="spacer">scroll ↓</div>
+
+    <h2>Lazy iframe (core)</h2>
+    <p class="note"><code>&lt;iframe data-xo data-src&gt;</code> — loads only when scrolled into view.</p>
+    <iframe data-xo
+            data-src="https://www.openstreetmap.org/export/embed.html?bbox=37.58%2C55.73%2C37.65%2C55.77"
+            data-ratio="16/9" data-color="#dde3e8"
+            title="Map"></iframe>
+
+    <div class="spacer">scroll ↓</div>
+
+    <h2>Lazy video (core)</h2>
+    <p class="note"><code>&lt;video data-xo data-poster data-src&gt;</code> — the poster reserves the
+    box, the file loads near the viewport.</p>
+    <video data-xo
+           data-poster="https://picsum.photos/seed/vid/1200/675"
+           data-src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+           data-ratio="16/9" controls muted playsinline preload="none"></video>
+
+    <div class="spacer">scroll ↓</div>
+
+    <h2>Intent strategy</h2>
+    <p class="note">This image has <code>data-xo-strategy="intent"</code> — it loads on the first
+    hover/focus/touch, not on scroll. Great for tab panels and dropdown previews.</p>
+    <img data-xo data-xo-strategy="intent"
+         data-src="https://picsum.photos/seed/intent/1200/600"
+         data-color="#b8a88f" width="1200" height="600" alt="Loads on hover">
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script src="../packages/core/dist/xoframe-embed.min.js"></script>
+  <script>
+    XOframe.init()
+    XOframeEmbed.init()
+    document.addEventListener('xo:embed', e => console.log('embed activated:', e.detail.src))
+  </script>
+</body>
+</html>

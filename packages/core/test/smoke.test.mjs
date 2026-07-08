@@ -203,6 +203,45 @@ test('pause() defers loading, resume() releases the queue', () => {
   XOframe.destroy()
 })
 
+test('iframe: data-src promoted, loading=lazy hint kept off deferred frames', () => {
+  const doc = installDom(
+    '<iframe data-xo data-src="https://example.com/embed" data-ratio="16/9" title="t"></iframe>'
+  )
+  XOframe.init()
+  const frame = doc.querySelector('iframe')
+  assert.equal(frame.getAttribute('src'), 'https://example.com/embed')
+  assert.ok(frame.classList.contains('xo-loading'))
+  frame.dispatchEvent(new Event('load'))
+  assert.ok(frame.classList.contains('xo-loaded'))
+  XOframe.destroy()
+})
+
+test('video: data-poster and data-src promoted, reveal on loadeddata', () => {
+  const doc = installDom(
+    '<video data-xo data-poster="p.jpg" data-src="v.mp4" data-ratio="16/9"></video>'
+  )
+  XOframe.init()
+  const video = doc.querySelector('video')
+  assert.equal(video.getAttribute('poster'), 'p.jpg')
+  assert.equal(video.getAttribute('src'), 'v.mp4')
+  assert.ok(video.classList.contains('xo-lqip'), 'poster keeps the element visible')
+  video.dispatchEvent(new Event('loadeddata'))
+  assert.ok(video.classList.contains('xo-loaded'))
+  XOframe.destroy()
+})
+
+test('intent strategy: loads on pointerenter, not before', () => {
+  const doc = installDom(
+    '<img data-xo data-xo-strategy="intent" data-src="i.jpg" width="800" height="600" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  assert.equal(img.getAttribute('src'), null, 'not loaded on init')
+  img.dispatchEvent(new Event('pointerenter'))
+  assert.equal(img.getAttribute('src'), 'i.jpg', 'loaded after hover')
+  XOframe.destroy()
+})
+
 test('auto mode: plain <img> gets managed classes without any data attributes', () => {
   const doc = installDom(
     '<img src="plain.jpg" width="800" height="600" alt=""><img data-xo-skip src="skip.jpg" alt="">'

@@ -20,6 +20,10 @@
     "./debug": {
       "types": "./dist/debug.d.ts",
       "import": "./dist/xoframe-debug.esm.js"
+    },
+    "./embed": {
+      "types": "./dist/embed.d.ts",
+      "import": "./dist/xoframe-embed.esm.js"
     }
   },
   "sideEffects": false,
