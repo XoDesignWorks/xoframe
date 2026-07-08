@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — auto mode (zero markup)</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>auto mode — zero markup</span></header>
+  <main>
+    <h2>Plain HTML, no data attributes</h2>
+    <p class="note">This page uses ordinary <code>&lt;img src&gt;</code> tags — the markup a CMS produces.
+    One call to <code>XOframe.auto()</code>: the wrongly lazy-loaded hero below is upgraded to
+    <code>eager</code> + <code>fetchpriority="high"</code>, everything below the fold gets native
+    <code>loading="lazy"</code>, and all images get reveal classes and events.</p>
+
+    <!-- A classic CMS mistake: the LCP hero has loading="lazy". XOframe fixes it. -->
+    <img src="https://picsum.photos/seed/auto-hero/1600/900" loading="lazy" width="1600" height="900" alt="Hero (was wrongly lazy)">
+
+    <div class="spacer">below the fold ↓</div>
+
+    <div class="grid">
+      <img src="https://picsum.photos/seed/a1/600/400" width="600" height="400" alt="">
+      <img src="https://picsum.photos/seed/a2/600/400" width="600" height="400" alt="">
+      <img src="https://picsum.photos/seed/a3/600/400" width="600" height="400" alt="">
+      <img src="https://picsum.photos/seed/a4/600/400" width="600" height="400" alt="">
+    </div>
+
+    <h2>Missing dimensions (debug warning)</h2>
+    <p class="note">This image has no <code>width</code>/<code>height</code> — with <code>debug: true</code>
+    XOframe warns about it in the console.</p>
+    <img src="https://picsum.photos/seed/a5/900/300" alt="No dimensions">
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script>XOframe.auto({ debug: true })</script>
+</body>
+</html>

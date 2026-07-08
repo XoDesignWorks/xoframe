@@ -1,0 +1,215 @@
+/**
+ * Smoke tests for @xoframe/core against the built ESM bundle (run `npm run build` first).
+ * jsdom has no IntersectionObserver, which conveniently exercises the
+ * "no IO → load immediately" fallback path of the library.
+ */
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { JSDOM } from 'jsdom'
+import { XOframe } from '../dist/xoframe.esm.js'
+
+// --- SSR safety: must run BEFORE any window global is installed ---
+
+test('SSR-safe: init() without window is a no-op and does not throw', () => {
+  assert.equal(typeof window, 'undefined')
+  assert.doesNotThrow(() => XOframe.init())
+})
+
+test('exports the full public API', () => {
+  for (const method of [
+    'init', 'auto', 'refresh', 'load', 'loadAll', 'loadInside',
+    'observe', 'unobserve', 'pause', 'resume', 'destroy'
+  ]) {
+    assert.equal(typeof XOframe[method], 'function', method + ' is a function')
+  }
+})
+
+// --- Browser-like tests (jsdom) ---
+
+const installDom = (bodyHtml) => {
+  const dom = new JSDOM(`<!doctype html><html><body>${bodyHtml}</body></html>`)
+  globalThis.window = dom.window
+  globalThis.document = dom.window.document
+  globalThis.CustomEvent = dom.window.CustomEvent
+  globalThis.Event = dom.window.Event
+  globalThis.Image = dom.window.Image
+  globalThis.innerWidth = 1280
+  globalThis.innerHeight = 800
+  Object.defineProperty(globalThis, 'navigator', {
+    value: dom.window.navigator,
+    configurable: true
+  })
+  return dom.window.document
+}
+
+test('fallback without IntersectionObserver: data-src promoted to src immediately', () => {
+  const doc = installDom(
+    '<img data-xo data-src="https://example.com/a.jpg" width="800" height="600" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  assert.equal(img.getAttribute('src'), 'https://example.com/a.jpg')
+  assert.ok(img.classList.contains('xo'))
+  assert.ok(img.classList.contains('xo-loading'))
+  XOframe.destroy()
+})
+
+test('load event → xo-loaded class, bubbling xo:load event, onLoad callback', () => {
+  const doc = installDom(
+    '<img data-xo data-src="https://example.com/b.jpg" width="800" height="600" alt="">'
+  )
+  let cbElement = null
+  let eventElement = null
+  doc.addEventListener('xo:load', (e) => (eventElement = e.detail.element))
+  XOframe.init({ onLoad: (el) => (cbElement = el) })
+  const img = doc.querySelector('img')
+  img.dispatchEvent(new Event('load'))
+  assert.ok(img.classList.contains('xo-loaded'))
+  assert.ok(!img.classList.contains('xo-loading'))
+  assert.equal(cbElement, img)
+  assert.equal(eventElement, img)
+  XOframe.destroy()
+})
+
+test('error event → xo-error class and onError callback', () => {
+  const doc = installDom(
+    '<img data-xo data-src="https://example.com/broken.jpg" width="800" height="600" alt="">'
+  )
+  let failed = null
+  XOframe.init({ onError: (el) => (failed = el) })
+  const img = doc.querySelector('img')
+  img.dispatchEvent(new Event('error'))
+  assert.ok(img.classList.contains('xo-error'))
+  assert.equal(failed, img)
+  XOframe.destroy()
+})
+
+test('dominant color placeholder: backgroundColor + xo-placeholder class', () => {
+  const doc = installDom(
+    '<img data-xo data-src="x.jpg" data-color="#d8c6a4" width="800" height="600" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  assert.ok(img.style.backgroundColor.length > 0)
+  assert.ok(img.classList.contains('xo-placeholder'))
+  XOframe.destroy()
+})
+
+test('4-corner gradient placeholder: radial-gradient layers + base color', () => {
+  const doc = installDom(
+    '<img data-xo data-src="x.jpg" data-gradient="#7a6a52,#b8a88f,#4f5d6b,#8fa3b8" width="800" height="600" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  const layers = img.style.backgroundImage.match(/radial-gradient/g) || []
+  assert.equal(layers.length, 4)
+  assert.ok(img.style.backgroundColor.length > 0)
+  assert.ok(img.classList.contains('xo-placeholder'))
+  XOframe.destroy()
+})
+
+test('LQIP: an existing src marks the element xo-lqip and still swaps to data-src', () => {
+  const doc = installDom(
+    '<img data-xo src="tiny.jpg" data-src="https://example.com/full.jpg" width="800" height="600" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  assert.ok(img.classList.contains('xo-lqip'))
+  assert.equal(img.getAttribute('src'), 'https://example.com/full.jpg')
+  XOframe.destroy()
+})
+
+test('picture: data-srcset on <source> is promoted', () => {
+  const doc = installDom(
+    '<picture data-xo><source data-srcset="small.webp" media="(max-width: 600px)">' +
+      '<img data-src="big.jpg" width="800" height="600" alt=""></picture>'
+  )
+  XOframe.init()
+  assert.equal(doc.querySelector('source').getAttribute('srcset'), 'small.webp')
+  assert.equal(doc.querySelector('img').getAttribute('src'), 'big.jpg')
+  XOframe.destroy()
+})
+
+test('manual strategy: not loaded on init, loaded via XOframe.load()', () => {
+  const doc = installDom(
+    '<img data-xo data-xo-strategy="manual" data-src="m.jpg" width="800" height="600" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  assert.equal(img.getAttribute('src'), null)
+  XOframe.load(img)
+  assert.equal(img.getAttribute('src'), 'm.jpg')
+  XOframe.destroy()
+})
+
+test('data-xo-priority="high": eager + fetchpriority even in fallback mode', () => {
+  const doc = installDom(
+    '<img data-xo data-xo-priority="high" data-src="hero.jpg" width="1600" height="900" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  assert.equal(img.getAttribute('fetchpriority'), 'high')
+  assert.equal(img.getAttribute('src'), 'hero.jpg')
+  XOframe.destroy()
+})
+
+test('blocks: xo-visible and is-xo-visible plus xo:visible event', () => {
+  const doc = installDom('<section data-xo-block><p>content</p></section>')
+  let visible = null
+  doc.addEventListener('xo:visible', (e) => (visible = e.detail.element))
+  XOframe.init()
+  const block = doc.querySelector('section')
+  assert.ok(block.classList.contains('xo-visible'))
+  assert.ok(block.classList.contains('is-xo-visible'))
+  assert.equal(visible, block)
+  XOframe.destroy()
+})
+
+test('background: data-bg is loaded through a preloader Image', () => {
+  const doc = installDom(
+    '<div data-xo-bg data-bg="bg.jpg" data-ratio="16/9" data-color="#eee"></div>'
+  )
+  XOframe.init()
+  const el = doc.querySelector('div')
+  assert.ok(el.classList.contains('xo-bg'))
+  assert.ok(el.classList.contains('xo-loading'))
+  assert.ok(el.style.backgroundColor.length > 0)
+  XOframe.destroy()
+})
+
+test('refresh() picks up elements added after init', () => {
+  const doc = installDom('<div id="root"></div>')
+  XOframe.init()
+  doc.getElementById('root').innerHTML =
+    '<img data-xo data-src="late.jpg" width="800" height="600" alt="">'
+  const img = doc.querySelector('img')
+  assert.equal(img.getAttribute('src'), null)
+  XOframe.refresh()
+  assert.equal(img.getAttribute('src'), 'late.jpg')
+  XOframe.destroy()
+})
+
+test('pause() defers loading, resume() releases the queue', () => {
+  const doc = installDom('<div id="root"></div>')
+  XOframe.init()
+  XOframe.pause()
+  doc.getElementById('root').innerHTML =
+    '<img data-xo data-src="queued.jpg" width="800" height="600" alt="">'
+  XOframe.refresh()
+  const img = doc.querySelector('img')
+  assert.equal(img.getAttribute('src'), null, 'not loaded while paused')
+  XOframe.resume()
+  assert.equal(img.getAttribute('src'), 'queued.jpg', 'loaded after resume')
+  XOframe.destroy()
+})
+
+test('auto mode: plain <img> gets managed classes without any data attributes', () => {
+  const doc = installDom(
+    '<img src="plain.jpg" width="800" height="600" alt=""><img data-xo-skip src="skip.jpg" alt="">'
+  )
+  XOframe.auto()
+  const [plain, skipped] = doc.querySelectorAll('img')
+  assert.ok(plain.classList.contains('xo'))
+  assert.ok(!skipped.classList.contains('xo'), 'data-xo-skip is excluded')
+  XOframe.destroy()
+})

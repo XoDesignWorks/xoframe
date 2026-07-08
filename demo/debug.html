@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — debug overlay</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>debug overlay — Core Web Vitals guard</span></header>
+  <main>
+    <h2>A page with deliberate mistakes</h2>
+    <p class="note">The panel in the corner shows live CLS and LCP. This page breaks the rules on
+    purpose: the first big image is natively lazy-loaded (LCP warning) and the second has no
+    width/height, so it shifts the text below when it loads (CLS goes red, the culprit flashes).</p>
+
+    <!-- Mistake 1: LCP image with native lazy loading and no XOframe management -->
+    <img src="https://picsum.photos/seed/dbg-hero/1600/900" loading="lazy" width="1600" height="900" alt="Lazy LCP hero" data-xo-skip>
+
+    <h2>Shifting image</h2>
+    <!-- Mistake 2: no width/height, no aspect-ratio: everything below jumps when it loads -->
+    <img src="https://picsum.photos/seed/dbg-shift/1000/600?t=1" alt="No dimensions" data-xo-skip style="width:100%">
+    <p>This paragraph jumps down when the image above finishes loading — that jump is the layout
+    shift you see counted in the panel.</p>
+
+    <div class="spacer">more content ↓</div>
+
+    <div class="grid">
+      <img data-xo data-src="https://picsum.photos/seed/d1/600/400" data-color="#a89f91" width="600" height="400" alt="">
+      <img data-xo data-src="https://picsum.photos/seed/d2/600/400" data-color="#91a8a0" width="600" height="400" alt="">
+      <img data-xo data-src="https://picsum.photos/seed/d3/600/400" data-color="#a091a8" width="600" height="400" alt="">
+    </div>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script src="../packages/core/dist/xoframe-debug.min.js"></script>
+  <script>
+    XOframe.init()
+    XOframeDebug.init()
+  </script>
+</body>
+</html>

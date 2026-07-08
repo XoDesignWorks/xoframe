@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — content blocks</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>block reveal + manual API</span></header>
+  <main>
+    <h2>Long landing page</h2>
+    <p class="note">Sections get <code>.xo-visible</code> when they enter the viewport.
+    The animation lives entirely in the page CSS — content is never hidden from SEO by the library.</p>
+
+    <section data-xo-block>
+      <h2>Feature one</h2>
+      <p>Blocks reveal as you scroll. The text is always in the DOM.</p>
+      <img data-xo data-src="https://picsum.photos/seed/b1/1000/500" data-color="#cabfae" width="1000" height="500" alt="">
+    </section>
+
+    <div class="spacer">scroll ↓</div>
+
+    <section data-xo-block>
+      <h2>Feature two</h2>
+      <p>Custom reveal offset via <code>blockRootMargin</code> option.</p>
+      <img data-xo data-src="https://picsum.photos/seed/b2/1000/500" data-color="#aec6ca" width="1000" height="500" alt="">
+    </section>
+
+    <div class="spacer">scroll ↓</div>
+
+    <section data-xo-block>
+      <h2>Manual loading</h2>
+      <p>This image uses <code>data-xo-strategy="manual"</code> — it loads only via the button.</p>
+      <img id="manual-img" data-xo data-xo-strategy="manual"
+           data-src="https://picsum.photos/seed/b3/1000/500"
+           data-color="#c9aeca" width="1000" height="500" alt="">
+      <p><button onclick="XOframe.load(document.getElementById('manual-img'))">Load image via XOframe.load()</button></p>
+    </section>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script>
+    XOframe.init({ blockRootMargin: '0px 0px -10% 0px' })
+    document.addEventListener('xo:visible', e => console.log('visible:', e.detail.element))
+  </script>
+</body>
+</html>

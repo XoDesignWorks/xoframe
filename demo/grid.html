@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — product grid</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>product grid + &lt;picture&gt;</span></header>
+  <main>
+    <h2>Responsive product cards</h2>
+    <p class="note">Each card uses <code>&lt;picture data-xo&gt;</code> with <code>data-srcset</code> sources.
+    Aspect ratio is locked, so the grid never jumps.</p>
+    <div class="grid" id="products"></div>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script>
+    const grid = document.getElementById('products')
+    for (let i = 1; i <= 12; i++) {
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="card">
+          <picture data-xo>
+            <source data-srcset="https://picsum.photos/seed/p${i}/400/500" media="(max-width: 600px)">
+            <img data-src="https://picsum.photos/seed/p${i}/600/750"
+                 data-color="hsl(${i * 30}, 20%, 80%)"
+                 width="600" height="750" alt="Product ${i}">
+          </picture>
+          <div class="body"><strong>Product ${i}</strong><br>$${(i * 7).toFixed(2)}</div>
+        </div>`)
+    }
+    XOframe.init()
+  </script>
+</body>
+</html>

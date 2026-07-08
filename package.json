@@ -1,0 +1,13 @@
+{
+  "name": "xoframe-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @xoframe/core",
+    "test": "npm test -w @xoframe/core",
+    "build:wp": "npm run build && mkdir -p packages/wordpress/xoframe/assets && cp packages/core/dist/xoframe.min.js packages/core/dist/xoframe.css packages/wordpress/xoframe/assets/",
+    "demo": "python3 -m http.server 4173"
+  }
+}

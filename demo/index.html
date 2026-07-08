@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — demos</title>
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site"><h1>XOframe</h1><span>zero-CLS progressive media loading · core 2.4 KB gzip</span></header>
+  <main>
+    <h2>Demos</h2>
+    <nav class="demos">
+      <ul>
+        <li><a href="basic.html">1. Basic images</a> — lazy loading, dominant color, LQIP, error fallback</li>
+        <li><a href="hero.html">2. Hero image / LCP-aware loading</a> — eager + fetchpriority for the LCP candidate</li>
+        <li><a href="grid.html">3. Product grid</a> — zero-CLS cards with <code>&lt;picture&gt;</code>/srcset</li>
+        <li><a href="backgrounds.html">4. Background images</a> — lazy backgrounds with color placeholders</li>
+        <li><a href="blocks.html">5. Long landing with blocks</a> — content block reveal + manual API</li>
+        <li><a href="auto.html">6. Auto mode (zero markup)</a> — plain CMS-style <code>&lt;img&gt;</code> tags, one call to <code>XOframe.auto()</code></li>
+        <li><a href="debug.html">7. Debug overlay</a> — live CLS/LCP guard on a page with deliberate mistakes</li>
+      </ul>
+    </nav>
+    <p class="note">Open DevTools → Network to watch images load only as you scroll.
+    Run Lighthouse to verify CLS stays at 0.</p>
+  </main>
+</body>
+</html>

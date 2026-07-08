@@ -1,0 +1,56 @@
+{
+  "name": "@xoframe/core",
+  "version": "0.1.0",
+  "description": "Zero-CLS progressive media loading. Reserve space, show placeholder, load smart, reveal smoothly — in ~2 KB.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/xoframe.cjs",
+  "module": "./dist/xoframe.esm.js",
+  "types": "./dist/index.d.ts",
+  "unpkg": "./dist/xoframe.min.js",
+  "jsdelivr": "./dist/xoframe.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/xoframe.esm.js",
+      "require": "./dist/xoframe.cjs"
+    },
+    "./styles.css": "./dist/xoframe.css",
+    "./cdn": "./dist/xoframe.min.js",
+    "./debug": {
+      "types": "./dist/debug.d.ts",
+      "import": "./dist/xoframe-debug.esm.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "lazy-loading",
+    "cls",
+    "lcp",
+    "core-web-vitals",
+    "images",
+    "performance",
+    "placeholder",
+    "lqip"
+  ],
+  "scripts": {
+    "build": "node build.mjs && tsc -p tsconfig.json",
+    "test": "node --test \"test/*.test.mjs\"",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xoframe/xoframe.git"
+  },
+  "homepage": "https://github.com/xoframe/xoframe#readme",
+  "bugs": "https://github.com/xoframe/xoframe/issues",
+  "author": "Denis Malov",
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "jsdom": "^29.1.1",
+    "typescript": "^5.6.0"
+  }
+}

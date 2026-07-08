@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — background images</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>lazy backgrounds</span></header>
+  <main>
+    <h2>Lazy background sections</h2>
+    <p class="note">Each section reserves space with <code>data-ratio</code> and shows
+    <code>data-color</code> until the background image loads.</p>
+
+    <div class="bg-section" data-xo-bg
+         data-bg="https://picsum.photos/seed/bg1/1600/900"
+         data-ratio="16/9" data-color="#5d6b7a">
+      Section one
+    </div>
+
+    <div class="spacer">scroll ↓</div>
+
+    <div class="bg-section" data-xo-bg
+         data-bg="https://picsum.photos/seed/bg2/1600/600"
+         data-ratio="8/3" data-color="#7a6b5d">
+      Section two
+    </div>
+
+    <div class="spacer">scroll ↓</div>
+
+    <div class="bg-section" data-xo-bg
+         data-bg="https://picsum.photos/seed/bg3/1600/900"
+         data-ratio="16/9" data-color="#5d7a68"
+         style="--xo-bg-position: top center">
+      Section three (custom --xo-bg-position)
+    </div>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js" data-xo-auto></script>
+</body>
+</html>

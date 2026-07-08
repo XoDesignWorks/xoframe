@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — LCP-aware hero</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>hero / LCP-aware</span></header>
+  <main>
+    <div class="hero">
+      <!-- Explicit high priority: loads eagerly with fetchpriority="high", never lazy -->
+      <img data-xo data-xo-priority="high"
+           data-src="https://picsum.photos/seed/hero/1600/900"
+           data-color="#6d7b8d"
+           width="1600" height="900" alt="Hero image">
+    </div>
+    <p class="note">The hero image is marked <code>data-xo-priority="high"</code>: XOframe sets
+    <code>loading="eager"</code> and <code>fetchpriority="high"</code> and loads it immediately.
+    With <code>lcpAware: true</code> (default) the first large above-the-fold image is detected
+    automatically even without the attribute. Inspect the element to verify.</p>
+
+    <div class="spacer">everything below is lazy ↓</div>
+
+    <div class="grid">
+      <img data-xo data-src="https://picsum.photos/seed/h1/600/400" data-color="#a89f91" width="600" height="400" alt="">
+      <img data-xo data-src="https://picsum.photos/seed/h2/600/400" data-color="#91a8a0" width="600" height="400" alt="">
+      <img data-xo data-src="https://picsum.photos/seed/h3/600/400" data-color="#a091a8" width="600" height="400" alt="">
+    </div>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script>XOframe.init({ lcpAware: true })</script>
+</body>
+</html>

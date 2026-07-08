@@ -1,0 +1,49 @@
+/* XOframe base styles. Optional — everything works without them,
+   but fade-in reveal needs these rules. All classes are added by JS,
+   so content stays fully visible without JavaScript (SEO/noscript safe). */
+
+.xo {
+  transition: opacity var(--xo-duration, 300ms) var(--xo-ease, ease);
+}
+
+/* Hide while loading — but never hide placeholders:
+   - .xo-lqip: a tiny/LQIP preview image stays visible and the full image
+     paints over it inside the same element;
+   - .xo-placeholder: a dominant-color box stays visible and the image
+     paints over the color;
+   - .xo-bg / .xo-block: may contain real content, never hidden. */
+.xo-loading:not(.xo-lqip):not(.xo-placeholder):not(.xo-bg):not(.xo-block) {
+  opacity: 0;
+}
+
+.xo-loaded,
+.xo-visible {
+  opacity: 1;
+}
+
+.xo-placeholder {
+  border-radius: var(--xo-radius, 0);
+}
+
+.xo-ratio {
+  aspect-ratio: var(--xo-ratio);
+}
+
+.xo-bg {
+  background-size: var(--xo-bg-size, cover);
+  background-position: var(--xo-bg-position, center);
+  background-repeat: no-repeat;
+}
+
+/* Failed images: keep the reserved box, don't collapse the layout. */
+.xo-error {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xo,
+  .xo-bg,
+  .xo-block {
+    transition: none !important;
+  }
+}
