@@ -56,7 +56,7 @@ await build({
 // importing one never pulls in the others. The reference MIT decoders
 // (evanw/thumbhash, wolt/blurhash) are bundled at build time, keeping the
 // published package free of runtime dependencies.
-for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry']) {
+for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility']) {
   const globalName = 'XOframe' + name[0].toUpperCase() + name.slice(1)
   await build({
     ...shared,

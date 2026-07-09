@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] — 2026-07-09
+
+### Added
+- `@xodesign/xoframe/skeleton` (~2 KB) — animated block skeleton presets (`hero`, `cards`, `products`, `gallery`, `article`, `testimonial`, `profile`, `video`, `map`, `pricing`, `media-text`). Reserves the block's box, fades out on `xo:visible`/`xo:reveal`, `XOframeSkeleton.reveal(el)`, or an `autoHide` timeout. Themeable via `--xo-skeleton-*`, respects reduced motion.
+- `@xodesign/xoframe/visibility` (~1 KB) — content-visibility manager: applies `content-visibility: auto` + `contain-intrinsic-size` to off-screen blocks (feature-detected, safe no-op where unsupported). `data-xo-visibility="off"` opts critical blocks out; `debug: true` warns on wildly wrong intrinsic sizes.
+
+### Notes
+- Core bundle unchanged (~2.5 KB gzip) — both are separate entry points, zero cost unless imported.
+
 ## [0.3.0] — 2026-07-09
 
 ### Added

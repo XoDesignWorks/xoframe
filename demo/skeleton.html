@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — skeleton presets & content-visibility</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    .demo-block { border: 1px solid #e5e2dc; border-radius: 12px; padding: 20px; margin: 16px 0; background: #fff; }
+    .real-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .real-cards .c img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; display: block; }
+    .controls button { font: inherit; padding: 8px 16px; border-radius: 8px; border: 1px solid #d8d4cc; background: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>skeleton presets · content-visibility</span></header>
+  <main>
+    <h2>Skeleton presets</h2>
+    <p class="note">A <code>data-xo-skeleton</code> block shows an animated placeholder that occupies
+    the same box the real content will — zero layout shift when content swaps in. Loaded as a
+    separate module: <code>@xodesign/xoframe/skeleton</code>. Click to reveal the real content.</p>
+
+    <div class="controls"><button id="reveal">Reveal real content</button></div>
+
+    <h3>cards</h3>
+    <section id="cards-block" class="demo-block" data-xo-skeleton="cards" data-xo-min-height="240px"></section>
+
+    <h3>article</h3>
+    <section id="article-block" class="demo-block" data-xo-skeleton="article"></section>
+
+    <h3>testimonial</h3>
+    <section id="testimonial-block" class="demo-block" data-xo-skeleton="testimonial"></section>
+
+    <h2>Content-visibility manager</h2>
+    <p class="note">The heavy sections below carry <code>data-xo-visibility</code> +
+    <code>data-xo-intrinsic-size</code>: off-screen ones skip rendering work while their height is
+    still reserved (no scrollbar jump). Module: <code>@xodesign/xoframe/visibility</code>.
+    Check the applied styles in DevTools.</p>
+
+    <section class="demo-block" data-xo-visibility data-xo-intrinsic-size="600px" id="cv1">
+      <h3>Heavy section 1</h3>
+      <div class="real-cards">
+        <div class="c"><img data-xo data-src="https://picsum.photos/seed/cv1/400/300" data-color="#c9beae" width="400" height="300" alt=""></div>
+        <div class="c"><img data-xo data-src="https://picsum.photos/seed/cv2/400/300" data-color="#aec6c9" width="400" height="300" alt=""></div>
+        <div class="c"><img data-xo data-src="https://picsum.photos/seed/cv3/400/300" data-color="#c9aec6" width="400" height="300" alt=""></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script src="../packages/core/dist/xoframe-skeleton.min.js"></script>
+  <script src="../packages/core/dist/xoframe-visibility.min.js"></script>
+  <script>
+    XOframeSkeleton.init({ autoHide: 0 }) // manual reveal in this demo
+    XOframeVisibility.init({ debug: true })
+    XOframe.init()
+
+    document.getElementById('reveal').addEventListener('click', () => {
+      // Fill the blocks with real content, then dismiss their skeletons.
+      const cards = document.getElementById('cards-block')
+      cards.insertAdjacentHTML('beforeend',
+        '<div class="real-cards">' + [1,2,3].map(i =>
+          `<div class="c"><img data-xo data-src="https://picsum.photos/seed/sk${i}/400/300" data-color="#ccc" width="400" height="300" alt=""><p>Card ${i}</p></div>`
+        ).join('') + '</div>')
+      document.getElementById('article-block').insertAdjacentHTML('beforeend',
+        '<h3>Real article</h3><p>The skeleton reserved this exact space, so nothing jumped.</p>')
+      document.getElementById('testimonial-block').insertAdjacentHTML('beforeend',
+        '<blockquote>“Real testimonial content, revealed without a shift.”</blockquote>')
+      XOframe.refresh()
+      ;['cards-block','article-block','testimonial-block'].forEach(id =>
+        XOframeSkeleton.reveal(document.getElementById(id)))
+    })
+  </script>
+</body>
+</html>

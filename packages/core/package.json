@@ -1,6 +1,6 @@
 {
   "name": "@xodesign/xoframe",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Zero-CLS progressive media loading. Reserve space, show placeholder, load smart, reveal smoothly — in ~2 KB.",
   "license": "MIT",
   "type": "module",
@@ -36,6 +36,14 @@
     "./masonry": {
       "types": "./dist/masonry.d.ts",
       "import": "./dist/xoframe-masonry.esm.js"
+    },
+    "./skeleton": {
+      "types": "./dist/skeleton.d.ts",
+      "import": "./dist/xoframe-skeleton.esm.js"
+    },
+    "./visibility": {
+      "types": "./dist/visibility.d.ts",
+      "import": "./dist/xoframe-visibility.esm.js"
     }
   },
   "sideEffects": false,
@@ -54,7 +62,7 @@
   ],
   "scripts": {
     "build": "node build.mjs && tsc -p tsconfig.json",
-    "test": "node --test test/smoke.test.mjs test/placeholders.test.mjs test/masonry.test.mjs",
+    "test": "node --test test/smoke.test.mjs test/placeholders.test.mjs test/masonry.test.mjs test/skeleton.test.mjs test/visibility.test.mjs",
     "prepublishOnly": "npm run build && npm test"
   },
   "repository": {

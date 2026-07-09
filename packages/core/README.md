@@ -180,6 +180,44 @@ XOframeMasonry.init('[data-xo-masonry]', { minColumnWidth: 260, gap: 16 })
 Responsive column count (via `ResizeObserver`), shortest-column packing, and `XOframeMasonry.layout()`
 to re-flow after appending items (load-more). Fires a bubbling `xo:layout` event.
 
+### Skeleton presets
+
+`@xodesign/xoframe/skeleton` (~2 KB, separate entry) fills a block with an animated placeholder
+that occupies the same box the real content will — zero layout shift when content swaps in:
+
+```html
+<section data-xo-skeleton="cards"></section>
+<section data-xo-skeleton="article" data-xo-min-height="480px"></section>
+```
+
+```js
+import { XOframeSkeleton } from '@xodesign/xoframe/skeleton'
+XOframeSkeleton.init()
+```
+
+Presets: `hero`, `cards`, `products`, `gallery`, `article`, `testimonial`, `profile`, `video`,
+`map`, `pricing`, `media-text`. The skeleton fades out when the block fires `xo:visible`/`xo:reveal`,
+when you call `XOframeSkeleton.reveal(el)`, or after the `autoHide` safety timeout. Style it with
+`--xo-skeleton-color`, `--xo-skeleton-shine`, `--xo-skeleton-radius`. Respects reduced motion.
+
+### Content-visibility manager
+
+`@xodesign/xoframe/visibility` (~1 KB, separate entry) skips rendering work for off-screen blocks
+with `content-visibility: auto` while reserving their height, so the scrollbar never jumps:
+
+```html
+<section data-xo-visibility data-xo-intrinsic-size="800px">…</section>
+<section data-xo-visibility data-xo-intrinsic-size="600px 900px">…</section>
+```
+
+```js
+import { XOframeVisibility } from '@xodesign/xoframe/visibility'
+XOframeVisibility.init({ debug: true }) // warns when a reserved height is far off
+```
+
+Feature-detected (safe no-op where unsupported). Opt a critical/above-the-fold block out with
+`data-xo-visibility="off"`.
+
 ### Background images
 
 ```html
@@ -269,6 +307,8 @@ document.addEventListener('xo:load', (e) => console.log(e.detail.element))
 | `data-xo-strategy="intent"` | any | Load on first hover/focus/touch |
 | `data-xo-embed` + `data-video` | any | Click-to-load embed facade (embed module) |
 | `data-xo-masonry` | container | Zero-CLS masonry gallery (masonry module) |
+| `data-xo-skeleton` | block | Animated placeholder preset (skeleton module) |
+| `data-xo-visibility` + `data-xo-intrinsic-size` | block | content-visibility (visibility module) |
 | `data-xo-bg` + `data-bg` | any | Lazy background image |
 | `data-xo-block` | any | Content block reveal |
 
