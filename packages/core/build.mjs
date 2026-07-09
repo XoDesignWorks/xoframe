@@ -52,27 +52,11 @@ await build({
   outfile: 'dist/xoframe-debug.min.js'
 })
 
-// Embed facades — separate file, opt-in, never part of the core bundle
-await build({
-  ...shared,
-  entryPoints: ['src/embed.ts'],
-  format: 'esm',
-  outfile: 'dist/xoframe-embed.esm.js'
-})
-await build({
-  ...shared,
-  entryPoints: ['src/embed.ts'],
-  format: 'iife',
-  globalName: 'XOframeEmbed',
-  minify: true,
-  footer: { js: 'XOframeEmbed=XOframeEmbed.XOframeEmbed;' },
-  outfile: 'dist/xoframe-embed.min.js'
-})
-
-// Placeholder decoders — separate opt-in files; the reference MIT decoders
-// (evanw/thumbhash, wolt/blurhash) are bundled in at build time, so the
-// published package still has zero runtime dependencies.
-for (const name of ['thumbhash', 'blurhash']) {
+// Opt-in modules — each is a separate file, never part of the core bundle, so
+// importing one never pulls in the others. The reference MIT decoders
+// (evanw/thumbhash, wolt/blurhash) are bundled at build time, keeping the
+// published package free of runtime dependencies.
+for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry']) {
   const globalName = 'XOframe' + name[0].toUpperCase() + name.slice(1)
   await build({
     ...shared,

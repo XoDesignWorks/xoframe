@@ -159,6 +159,27 @@ ideal for tab panels, dropdown previews and galleries behind interaction:
 <img data-xo data-xo-strategy="intent" data-src="preview.jpg" width="1200" height="600" alt="">
 ```
 
+### Masonry gallery — zero CLS
+
+`@xodesign/xoframe/masonry` (~1.3 KB, separate entry) computes an Unsplash/Pinterest-style
+layout from each item's **known aspect ratio** (`width`/`height` or `data-ratio`) — positions
+are final before any image loads, so the grid never reflows:
+
+```html
+<div data-xo-masonry>
+  <img data-xo data-src="1.jpg" width="1200" height="800" alt="">
+  <img data-xo data-src="2.jpg" width="900"  height="1200" alt="">
+</div>
+```
+
+```js
+import { XOframeMasonry } from '@xodesign/xoframe/masonry'
+XOframeMasonry.init('[data-xo-masonry]', { minColumnWidth: 260, gap: 16 })
+```
+
+Responsive column count (via `ResizeObserver`), shortest-column packing, and `XOframeMasonry.layout()`
+to re-flow after appending items (load-more). Fires a bubbling `xo:layout` event.
+
 ### Background images
 
 ```html
@@ -247,6 +268,7 @@ document.addEventListener('xo:load', (e) => console.log(e.detail.element))
 | `data-xo-strategy="manual"` | any | Load only via API |
 | `data-xo-strategy="intent"` | any | Load on first hover/focus/touch |
 | `data-xo-embed` + `data-video` | any | Click-to-load embed facade (embed module) |
+| `data-xo-masonry` | container | Zero-CLS masonry gallery (masonry module) |
 | `data-xo-bg` + `data-bg` | any | Lazy background image |
 | `data-xo-block` | any | Content block reveal |
 

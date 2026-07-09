@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-07-09
+
+### Added
+- `@xodesign/xoframe/masonry` (~1.3 KB) — zero-CLS masonry gallery. Column positions are computed from each item's known aspect ratio (`width`/`height` or `data-ratio`) before any image loads, so the grid never reflows. Responsive column count via `ResizeObserver`, shortest-column packing, `XOframeMasonry.layout()` for load-more, bubbling `xo:layout` event.
+
+### Notes
+- Core bundle unchanged (~2.5 KB gzip) — masonry is a separate entry point, so it costs nothing unless imported.
+
 ## [0.2.0] — 2026-07-09
 
 One product, modular entry points: everything ships in `@xodesign/xoframe`, but each scenario is

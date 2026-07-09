@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — zero-CLS masonry gallery</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    [data-xo-masonry] img { width: 100%; height: auto; display: block; border-radius: 8px; }
+    .controls { margin: 16px 0 32px; }
+    .controls button { font: inherit; padding: 8px 16px; border-radius: 8px; border: 1px solid #d8d4cc; background: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>zero-CLS masonry</span></header>
+  <main>
+    <h2>Unsplash-style gallery</h2>
+    <p class="note">The columns are positioned from the images' known aspect ratios
+    (<code>width</code>/<code>height</code>) <em>before</em> any image loads — so the grid never
+    reflows as pictures arrive. Loaded as a separate module: <code>@xodesign/xoframe/masonry</code>.
+    Resize the window to watch the column count adapt.</p>
+
+    <div class="controls"><button id="more">Load 8 more</button></div>
+
+    <div data-xo-masonry id="gallery"></div>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script src="../packages/core/dist/xoframe-masonry.min.js"></script>
+  <script>
+    const gallery = document.getElementById('gallery')
+    // Varied, known aspect ratios — the essence of a real masonry gallery.
+    const ratios = [[600,800],[600,400],[600,900],[600,500],[600,750],[600,600],[600,450],[600,1000]]
+    let n = 0
+    function add(count) {
+      for (let i = 0; i < count; i++) {
+        const [w, h] = ratios[n % ratios.length]
+        gallery.insertAdjacentHTML('beforeend',
+          `<img data-xo data-src="https://picsum.photos/seed/m${n}/${w}/${h}" data-color="hsl(${n*40%360}, 20%, 80%)" width="${w}" height="${h}" alt="">`)
+        n++
+      }
+      XOframe.refresh()      // pick up the new images
+      XOframeMasonry.layout() // re-layout with the appended items
+    }
+    add(12)
+    XOframe.init()
+    XOframeMasonry.init('[data-xo-masonry]', { minColumnWidth: 220, gap: 16 })
+    document.getElementById('more').addEventListener('click', () => add(8))
+  </script>
+</body>
+</html>
