@@ -24,7 +24,7 @@ separate file that never reaches your bundle unless used:
 
 | Entry | Status | Description |
 | --- | --- | --- |
-| [`@xodesign/xoframe`](packages/core) | ✅ v0.4.0 | Core (~2.5 KB gzip): lazy images/`<video>`/`<iframe>`, `<picture>`/srcset, responsive backgrounds, block reveal, LCP-aware mode, zero-markup auto mode, intent strategy, color/gradient/LQIP placeholders. |
+| [`@xodesign/xoframe`](packages/core) | ✅ v0.6.0 | Core (~2.7 KB gzip): lazy images/`<video>`/`<iframe>`, `<picture>`/srcset, responsive backgrounds, block reveal, **LCP-aware + INP guard**, zero-markup auto mode, intent strategy, color/gradient/LQIP placeholders. Helps all three Core Web Vitals. |
 | `@xodesign/xoframe/thumbhash` | ✅ v0.4.0 | ThumbHash placeholders (~1.5 KB, alpha, no canvas) |
 | `@xodesign/xoframe/blurhash` | ✅ v0.4.0 | BlurHash placeholders (~1 KB + decoder) |
 | `@xodesign/xoframe/embed` | ✅ v0.4.0 | Click-to-load YouTube/Vimeo/iframe facades (~1.7 KB) |

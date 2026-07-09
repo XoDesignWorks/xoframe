@@ -252,3 +252,45 @@ test('auto mode: plain <img> gets managed classes without any data attributes', 
   assert.ok(!skipped.classList.contains('xo'), 'data-xo-skip is excluded')
   XOframe.destroy()
 })
+
+// --- INP guard: batched scanning ---
+
+const many = (n) =>
+  Array.from({ length: n }, (_, i) =>
+    `<img data-xo data-src="b${i}.jpg" width="400" height="300" alt="">`
+  ).join('')
+
+test('INP guard: under batchSize, all elements process synchronously', () => {
+  const doc = installDom(many(10))
+  XOframe.init({ batchSize: 50 })
+  const imgs = [...doc.querySelectorAll('img')]
+  assert.ok(imgs.every((i) => i.getAttribute('src')), 'all loaded sync (fallback mode)')
+  XOframe.destroy()
+})
+
+test('INP guard: over batchSize, first chunk sync and the tail is deferred', () => {
+  const doc = installDom(many(20))
+  XOframe.init({ batchSize: 5 })
+  const imgs = [...doc.querySelectorAll('img')]
+  const loadedNow = imgs.filter((i) => i.getAttribute('src')).length
+  assert.equal(loadedNow, 5, 'exactly the first chunk loaded synchronously')
+  assert.ok(imgs.slice(5).every((i) => !i.getAttribute('src')), 'tail not yet loaded')
+})
+
+test('INP guard: the deferred tail finishes on later tasks', async () => {
+  const doc = installDom(many(20))
+  XOframe.init({ batchSize: 5 })
+  // Let the yielded chunks run.
+  await new Promise((r) => setTimeout(r, 50))
+  const imgs = [...doc.querySelectorAll('img')]
+  assert.ok(imgs.every((i) => i.getAttribute('src')), 'every element loaded after yielding')
+  XOframe.destroy()
+})
+
+test('INP guard: batchSize 0 forces fully synchronous scanning', () => {
+  const doc = installDom(many(120))
+  XOframe.init({ batchSize: 0 })
+  const imgs = [...doc.querySelectorAll('img')]
+  assert.ok(imgs.every((i) => i.getAttribute('src')), 'all 120 loaded sync when disabled')
+  XOframe.destroy()
+})

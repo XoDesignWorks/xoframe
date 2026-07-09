@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.6.0] — 2026-07-09
+
+### Added
+- **INP guard** in core — scanning is now chunked with `scheduler.yield()` (fallback `setTimeout`) so a page with hundreds of images never blocks the main thread in one long task. The first chunk stays synchronous to keep LCP detection immediate; the tail is spread across later tasks. New `batchSize` option (default 50; 0 disables). In testing, a 300-image scan dropped from ~148 ms to ~2 ms of synchronous work — now XOframe helps all three Core Web Vitals (CLS, LCP, INP).
+
+### Notes
+- Core is now ~2.7 KB gzip (from ~2.5 KB), still within the 3 KB budget.
+
 ## [0.5.0] — 2026-07-09
 
 ### Added

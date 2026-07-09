@@ -119,6 +119,19 @@ XOframe.auto()
 - every image gets reveal classes and `xo:*` events;
 - nothing else in your HTML changes. Exclude an image with `data-xo-skip`.
 
+### INP guard (built in)
+
+Classic lazy-loaders scan every `<img>` in one synchronous pass — on a gallery with hundreds of
+images that is a long task that blocks interaction and hurts **INP**. XOframe processes elements
+in chunks, yielding to the main thread between them via `scheduler.yield()` (with a `setTimeout`
+fallback). The first chunk runs synchronously so the LCP hero is still found immediately; the long
+tail is spread across later tasks. On a 300-image page this cut the scan's synchronous work from
+~148 ms to ~2 ms in testing.
+
+```js
+XOframe.init({ batchSize: 50 }) // default; set 0 to force fully synchronous scanning
+```
+
 ### Video and iframes
 
 The same pipeline handles `<video>` and `<iframe>`:
@@ -278,6 +291,7 @@ XOframe.init({
   debug: false,               // warn about images that may cause CLS
   auto: false,                // zero-markup mode: manage plain <img> tags too
   networkAware: true,         // Save-Data / 2G: no fade, load only in-viewport
+  batchSize: 50,              // INP guard: elements per task (0 = fully sync)
   onBeforeLoad: (el) => {},
   onLoad: (el) => {},
   onError: (el, error) => {},

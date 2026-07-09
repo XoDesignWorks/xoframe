@@ -46,6 +46,13 @@ export interface XOframeOptions extends XOframeCallbacks {
    * when it actually enters the viewport. Default: true.
    */
   networkAware?: boolean
+  /**
+   * INP guard: process at most this many elements per task, yielding to the
+   * main thread between chunks so scanning a large page never blocks
+   * interaction. The first chunk runs synchronously (keeps LCP detection
+   * immediate). Set 0 to disable (fully synchronous). Default: 50.
+   */
+  batchSize?: number
   /** Scope for element scanning. Default: document. */
   root?: Document | Element
 }
@@ -67,7 +74,8 @@ const DEFAULTS = {
   nativeLazy: true,
   debug: false,
   auto: false,
-  networkAware: true
+  networkAware: true,
+  batchSize: 50
 }
 
 const PREPARED = new WeakSet<Element>()
@@ -330,11 +338,36 @@ const route = (el: Element): void => {
   observe(el)
 }
 
+/** Yield to the main thread between work chunks (INP guard). */
+const yieldToMain = (): Promise<void> => {
+  const sched = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler
+  if (sched?.yield) return sched.yield()
+  return new Promise((r) => setTimeout(r, 0))
+}
+
 const scan = (root: Document | Element): void => {
   const s = settings!
   let sel = `${s.imageSelector},${s.bgSelector},${s.blockSelector}`
   if (s.auto) sel += ',img:not([data-xo],[data-xo-skip],[data-xo] img)'
-  root.querySelectorAll(sel).forEach(route)
+  const list = root.querySelectorAll(sel)
+  const batch = s.batchSize
+  // Small pages (or batching disabled): stay fully synchronous.
+  if (!batch || list.length <= batch) {
+    list.forEach(route)
+    return
+  }
+  // First chunk synchronously so the LCP hero is found and prioritized right
+  // away; process the long tail in yielded chunks to keep INP low.
+  const els = [...list]
+  for (let i = 0; i < batch; i++) route(els[i])
+  ;(async () => {
+    for (let i = batch; i < els.length; ) {
+      await yieldToMain()
+      if (!settings) return // destroyed mid-scan
+      const end = Math.min(i + batch, els.length)
+      for (; i < end; i++) route(els[i])
+    }
+  })()
 }
 
 const init = (options: XOframeOptions = {}): void => {
