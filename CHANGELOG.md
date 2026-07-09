@@ -3,6 +3,20 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] — 2026-07-09
+
+One product, modular entry points: everything ships in `@xodesign/xoframe`, but each scenario is
+a separate file — importing one placeholder never pulls the code of the others.
+
+### Added
+- `@xodesign/xoframe/thumbhash` — ThumbHash placeholders (~28-byte hashes, alpha support, rendered without canvas); invalid hashes fall back to `data-gradient`/`data-color`
+- `@xodesign/xoframe/blurhash` — BlurHash placeholders with `resolution`/`punch` options
+- Responsive backgrounds: `data-bg-mobile` / `data-bg-tablet` / `data-bg-desktop` with `data-bg` fallback
+- Decoded hash placeholders are cleared after the real image loads to free memory
+
+### Notes
+- Reference MIT decoders (evanw/thumbhash, wolt/blurhash) are bundled at build time — the package still has zero runtime dependencies
+
 ## [0.1.0] — 2026-07-08
 
 First public release of `@xodesign/xoframe`.

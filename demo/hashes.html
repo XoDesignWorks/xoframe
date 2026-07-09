@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — BlurHash & ThumbHash placeholders</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>BlurHash · ThumbHash</span></header>
+  <main>
+    <h2>ThumbHash placeholder</h2>
+    <p class="note">~28 bytes of base64 → a blurred preview with alpha support, rendered without
+    canvas. Loaded as a separate module: <code>@xodesign/xoframe/thumbhash</code>. If you don't
+    import it, none of its code ships.</p>
+    <img data-xo
+         data-thumbhash="5CgGNYp1d4eAiIh3h3iId3B0B/eI"
+         data-src="https://picsum.photos/seed/th1/1200/800"
+         width="1200" height="800" alt="ThumbHash example">
+
+    <div class="spacer">scroll ↓</div>
+
+    <h2>BlurHash placeholder</h2>
+    <p class="note">The classic BlurHash, decoded at 32×32: <code>@xodesign/xoframe/blurhash</code>.
+    Same rule — separate file, zero cost unless imported.</p>
+    <img data-xo
+         data-blurhash="LEHV6nWB2yk8pyo0adR*.7kCMdnj"
+         data-src="https://picsum.photos/seed/bh1/1200/800"
+         width="1200" height="800" alt="BlurHash example">
+
+    <h2>Fallback chain</h2>
+    <p class="note">An invalid hash falls back to <code>data-gradient</code>/<code>data-color</code>
+    handled by the core — the page never breaks.</p>
+    <img data-xo
+         data-thumbhash="broken!!!"
+         data-gradient="#7a6a52,#b8a88f,#4f5d6b,#8fa3b8"
+         data-src="https://picsum.photos/seed/fb1/1200/600"
+         width="1200" height="600" alt="Fallback example">
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script src="../packages/core/dist/xoframe-thumbhash.min.js"></script>
+  <script src="../packages/core/dist/xoframe-blurhash.min.js"></script>
+  <script>
+    // Placeholders first, then the loader — the preview is visible before any network I/O.
+    XOframeThumbhash.init()
+    XOframeBlurhash.init()
+    XOframe.init()
+  </script>
+</body>
+</html>

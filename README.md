@@ -21,12 +21,18 @@ reserve space → show placeholder → choose priority → load media → reveal
 
 | Package | Status | Description |
 | --- | --- | --- |
-| [`@xodesign/xoframe`](packages/core) | ✅ v0.1.0 | Free core: lazy images/`<video>`/`<iframe>`, `<picture>`/srcset, backgrounds, block reveal, LCP-aware mode, zero-markup auto mode, intent strategy. ~2.5 KB gzip. Ships embed facades (click-to-load YouTube/Vimeo, ~1.7 KB) and a dev-only debug overlay (live CLS/LCP guard) as separate files. |
-| [XOframe for WordPress](packages/wordpress/xoframe) | 🧪 MVP, untested on live WP | Zero-config plugin: rewrites content images on the fly, dominant-color placeholders via GD, piggybacks on WP's LCP heuristics. Build assets with `npm run build:wp`. |
-| `@xodesign/xoframe-blurhash` | planned (Pro) | BlurHash placeholder decoding |
-| `@xodesign/xoframe-thumbhash` | planned (Pro) | ThumbHash placeholder decoding |
-| `@xodesign/xoframe-masonry` | planned (Pro) | Zero-CLS masonry/grid galleries |
-| `@xodesign/xoframe-react` / `vue` / `svelte` | planned (Pro) | Framework components |
+One package, many entry points — **you only ship what you import**; every module below is a
+separate file that never reaches your bundle unless used:
+
+| Entry | Status | Description |
+| --- | --- | --- |
+| [`@xodesign/xoframe`](packages/core) | ✅ v0.2.0 | Core (~2.5 KB gzip): lazy images/`<video>`/`<iframe>`, `<picture>`/srcset, responsive backgrounds, block reveal, LCP-aware mode, zero-markup auto mode, intent strategy, color/gradient/LQIP placeholders. |
+| `@xodesign/xoframe/thumbhash` | ✅ v0.2.0 | ThumbHash placeholders (~1.5 KB, alpha, no canvas) |
+| `@xodesign/xoframe/blurhash` | ✅ v0.2.0 | BlurHash placeholders (~1 KB + decoder) |
+| `@xodesign/xoframe/embed` | ✅ v0.2.0 | Click-to-load YouTube/Vimeo/iframe facades (~1.7 KB) |
+| `@xodesign/xoframe/debug` | ✅ v0.2.0 | Dev-only live CLS/LCP guard overlay |
+| [XOframe for WordPress](packages/wordpress/xoframe) | 🧪 MVP, untested on live WP | Zero-config plugin: rewrites content images on the fly, dominant-color placeholders via GD. Build assets with `npm run build:wp`. |
+| masonry / skeleton presets / framework components | planned | Next phases |
 
 ## Development
 

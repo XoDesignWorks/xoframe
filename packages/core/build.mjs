@@ -69,6 +69,28 @@ await build({
   outfile: 'dist/xoframe-embed.min.js'
 })
 
+// Placeholder decoders — separate opt-in files; the reference MIT decoders
+// (evanw/thumbhash, wolt/blurhash) are bundled in at build time, so the
+// published package still has zero runtime dependencies.
+for (const name of ['thumbhash', 'blurhash']) {
+  const globalName = 'XOframe' + name[0].toUpperCase() + name.slice(1)
+  await build({
+    ...shared,
+    entryPoints: [`src/${name}.ts`],
+    format: 'esm',
+    outfile: `dist/xoframe-${name}.esm.js`
+  })
+  await build({
+    ...shared,
+    entryPoints: [`src/${name}.ts`],
+    format: 'iife',
+    globalName,
+    minify: true,
+    footer: { js: `${globalName}=${globalName}.${globalName};` },
+    outfile: `dist/xoframe-${name}.min.js`
+  })
+}
+
 // UMD — wrap a minified CJS bundle
 const cjsMin = await build({
   ...shared,

@@ -5,8 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @xodesign/xoframe",
-    "test": "npm test -w @xodesign/xoframe",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm test --workspaces --if-present",
     "build:wp": "npm run build && mkdir -p packages/wordpress/xoframe/assets && cp packages/core/dist/xoframe.min.js packages/core/dist/xoframe.css packages/wordpress/xoframe/assets/",
     "demo": "python3 -m http.server 4173"
   }

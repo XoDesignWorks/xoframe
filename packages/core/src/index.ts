@@ -190,7 +190,13 @@ const loadElement = (el: Element): void => {
 
   const d = (el as HTMLElement).dataset
   if (kind === 'bg') {
-    const url = d.bg
+    // Responsive backgrounds: pick the breakpoint source, fall back to data-bg.
+    const w = innerWidth
+    const url =
+      (w >= 1024 && (d.bgDesktop || d.bgTablet)) ||
+      (w >= 768 && d.bgTablet) ||
+      (w < 768 && d.bgMobile) ||
+      d.bg
     if (!url) return finish(el, false)
     const pre = new Image()
     pre.onload = () => {

@@ -66,6 +66,30 @@ Pass up to four corner colors (top-left, top-right, bottom-right, bottom-left):
      width="1200" height="800" alt="">
 ```
 
+### ThumbHash / BlurHash placeholders
+
+Hash placeholders live in separate entry points — **import only the one you use, the other
+never reaches your bundle** (and the core stays decoder-free):
+
+```html
+<img data-xo data-thumbhash="5CgGNYp1d4eAiIh3h3iId3B0B/eI" data-src="image.jpg" width="1200" height="800" alt="">
+<img data-xo data-blurhash="LEHV6nWB2yk8pyo0adR*.7kCMdnj" data-src="image.jpg" width="1200" height="800" alt="">
+```
+
+```js
+import { XOframeThumbhash } from '@xodesign/xoframe/thumbhash' // ~1.5 KB, alpha support, no canvas
+// or
+import { XOframeBlurhash } from '@xodesign/xoframe/blurhash'   // ~1 KB, resolution/punch options
+
+XOframeThumbhash.init() // render placeholders first…
+XOframe.init()          // …then start the loader
+```
+
+An invalid hash falls back to `data-gradient`/`data-color` — the page never breaks. The decoded
+placeholder is cleared shortly after the real image loads to free memory. The reference MIT
+decoders (evanw/thumbhash, wolt/blurhash) are bundled at build time, so the package keeps zero
+runtime dependencies.
+
 ### Tiny blurred placeholder (LQIP)
 
 Put your thumbnail in `src` — it shows immediately and the full image paints over it:
@@ -141,6 +165,14 @@ ideal for tab panels, dropdown previews and galleries behind interaction:
 <div data-xo-bg data-bg="section.jpg" data-ratio="16/9" data-color="#e9e2d8"></div>
 ```
 
+Responsive sources per breakpoint (mobile <768, tablet ≥768, desktop ≥1024; `data-bg` is the fallback):
+
+```html
+<div data-xo-bg
+     data-bg-mobile="s-mobile.jpg" data-bg-tablet="s-tablet.jpg" data-bg-desktop="s-desktop.jpg"
+     data-bg="s-desktop.jpg" data-ratio="16/9" data-color="#e9e2d8"></div>
+```
+
 ### Content blocks
 
 ```html
@@ -209,6 +241,8 @@ document.addEventListener('xo:load', (e) => console.log(e.detail.element))
 | `data-ratio` | any | Aspect ratio, e.g. `16/9` |
 | `data-color` | any | Dominant-color placeholder |
 | `data-gradient` | any | 4-corner gradient placeholder (`#c1,#c2,#c3,#c4`) |
+| `data-thumbhash` / `data-blurhash` | any | Hash placeholders (thumbhash/blurhash modules) |
+| `data-bg-mobile/tablet/desktop` | `data-xo-bg` | Responsive background sources |
 | `data-xo-priority="high"` | `img` | Eager + `fetchpriority=high` |
 | `data-xo-strategy="manual"` | any | Load only via API |
 | `data-xo-strategy="intent"` | any | Load on first hover/focus/touch |
@@ -258,4 +292,6 @@ Latest Chrome, Safari, Firefox, Edge, iOS Safari, Android Chrome. If `Intersecti
 
 ## License
 
-MIT
+MIT. The optional placeholder entries bundle the reference decoders
+[thumbhash](https://github.com/evanw/thumbhash) (© Evan Wallace, MIT) and
+[blurhash](https://github.com/woltapp/blurhash) (© Wolt, MIT).

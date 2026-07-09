@@ -30,9 +30,12 @@ jobs:
       - run: npm run build
       # Keep the demo's relative paths (../packages/core/dist) intact
       - run: |
-          mkdir -p _site/demo _site/packages/core
+          mkdir -p _site/demo
           cp -r demo/* _site/demo/
-          cp -r packages/core/dist _site/packages/core/dist
+          for d in packages/*/dist; do
+            mkdir -p "_site/$(dirname "$d")"
+            cp -r "$d" "_site/$d"
+          done
           printf '<!doctype html><meta http-equiv="refresh" content="0; url=demo/">' > _site/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
