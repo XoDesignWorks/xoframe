@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — web font stability (zero-CLS fonts)</title>
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+    .box { border: 1px solid #e5e2dc; border-radius: 12px; padding: 16px 20px; background: #fff; }
+    .box h3 { margin-top: 0; font-size: 13px; color: #6b6b66; text-transform: uppercase; letter-spacing: .04em; }
+    /* Simulate a web font that hasn't loaded by using a fallback stack.
+       The adjusted column gets XOframe's size-adjusted fallback. */
+    .raw { font-family: "Georgia", serif; }
+    .adjusted { font-family: "Times New Roman", "Times New Roman fallback", Georgia, serif; }
+    .sample { font-size: 22px; line-height: 1.5; }
+    /* Fade text in only once fonts are ready — no invisible-text flash, no ugly swap */
+    .swap { opacity: 0; transition: opacity .2s ease; }
+    .xo-fonts-loaded .swap { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>web font stability</span></header>
+  <main>
+    <h2>Fonts are the #2 cause of CLS</h2>
+    <p class="note">When a web font swaps in with different metrics than the fallback, every line of
+    text reflows. <code>@xodesign/xoframe/fonts</code> registers a metric-adjusted fallback
+    <code>@font-face</code> (measured at runtime, or from precomputed metrics) so the fallback
+    occupies the same space as the web font — the swap shifts nothing. It also preloads fonts and
+    adds <code>.xo-fonts-loaded</code> to <code>&lt;html&gt;</code> for a controlled reveal.</p>
+
+    <div class="cols">
+      <div class="box"><h3>Plain fallback</h3>
+        <p class="sample raw">The quick brown fox jumps over the lazy dog. 0123456789</p></div>
+      <div class="box"><h3>Size-adjusted fallback</h3>
+        <p class="sample adjusted">The quick brown fox jumps over the lazy dog. 0123456789</p></div>
+    </div>
+
+    <h2 class="swap" style="margin-top:48px">Controlled reveal (this heading fades in on fonts-ready)</h2>
+    <p class="note">Inspect <code>&lt;html&gt;</code> — it gets <code>class="xo-fonts-loaded"</code>
+    once <code>document.fonts.ready</code> resolves. Check the injected
+    <code>&lt;style id="xo-fonts-style"&gt;</code> for the computed <code>size-adjust</code>.</p>
+  </main>
+
+  <script src="../packages/core/dist/xoframe-fonts.min.js"></script>
+  <script>
+    XOframeFonts.init({
+      fonts: [
+        // Runtime-measured size-adjust (no precomputed metrics needed):
+        { family: 'Times New Roman', fallback: 'Georgia, serif', selector: '.adjusted' }
+      ]
+    })
+  </script>
+</body>
+</html>

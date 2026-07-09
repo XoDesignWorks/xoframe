@@ -253,6 +253,32 @@ Images sharing a `data-xo-lightbox` value form a group with prev/next and a coun
 Esc to close, ←/→ to navigate. Captions from `data-caption` or the thumbnail's `alt`. Neighbors
 are preloaded. Reduced motion disables the transition. `XOlightbox.close()` / `.destroy()` too.
 
+### Web font stability
+
+`@xodesign/xoframe/fonts` (~1.2 KB, separate entry) tackles the **#2 cause of CLS after images**:
+a web font swapping in with different metrics than the fallback reflows every line of text. It
+registers a metric-adjusted fallback `@font-face` (`size-adjust` measured at runtime, or from
+precomputed metrics) so the fallback occupies the same space as the web font — the swap shifts
+nothing. It also preloads fonts and flags `<html>` once fonts are ready:
+
+```js
+import { XOframeFonts } from '@xodesign/xoframe/fonts'
+XOframeFonts.init({
+  fonts: [{
+    family: 'Inter',
+    fallback: 'Arial, sans-serif',
+    selector: 'body',
+    preload: '/fonts/inter.woff2',
+    // optional — supply precomputed metrics (e.g. from Fontaine) for pixel-perfect zero CLS:
+    sizeAdjust: '107%', ascentOverride: '90%', descentOverride: '22%'
+  }]
+})
+```
+
+Without precomputed metrics the width-based `size-adjust` is measured at runtime (handles the
+dominant reflow); for pixel-perfect vertical metrics pass `ascentOverride`/`descentOverride`.
+`.xo-fonts-loaded` is added to `<html>` on `document.fonts.ready` for a controlled reveal.
+
 ### Background images
 
 ```html

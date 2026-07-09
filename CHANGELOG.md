@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] — 2026-07-09
+
+### Added
+- `@xodesign/xoframe/fonts` (~1.2 KB) — web font stability, the #2 cause of CLS after images. Registers a metric-adjusted fallback `@font-face` (`size-adjust` measured at runtime, or precomputed `size-adjust`/`ascent-override`/`descent-override`/`line-gap-override`) so the fallback matches the web font and the swap shifts nothing. Also preloads fonts and adds `.xo-fonts-loaded` to `<html>` on `document.fonts.ready` for a controlled reveal.
+
+### Notes
+- Core bundle unchanged (~2.7 KB gzip) — separate entry point.
+
 ## [0.6.0] — 2026-07-09
 
 ### Added
