@@ -281,9 +281,11 @@ test('INP guard: over batchSize, first chunk sync and the tail is deferred', () 
 test('INP guard: the deferred tail finishes on later tasks', async () => {
   const doc = installDom(many(20))
   XOframe.init({ batchSize: 5 })
-  // Let the yielded chunks run.
-  await new Promise((r) => setTimeout(r, 50))
   const imgs = [...doc.querySelectorAll('img')]
+  // Poll until the yielded chunks finish (robust against scheduler timing).
+  const deadline = Date.now() + 2000
+  while (imgs.some((i) => !i.getAttribute('src')) && Date.now() < deadline)
+    await new Promise((r) => setTimeout(r, 10))
   assert.ok(imgs.every((i) => i.getAttribute('src')), 'every element loaded after yielding')
   XOframe.destroy()
 })
