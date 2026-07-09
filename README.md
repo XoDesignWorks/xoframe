@@ -31,9 +31,10 @@ separate file that never reaches your bundle unless used:
 | `@xodesign/xoframe/masonry` | ✅ v0.4.0 | Zero-CLS masonry gallery from known aspect ratios (~1.3 KB) |
 | `@xodesign/xoframe/skeleton` | ✅ v0.4.0 | Animated block skeleton presets (~2 KB) |
 | `@xodesign/xoframe/visibility` | ✅ v0.4.0 | content-visibility manager for off-screen blocks (~1 KB) |
+| `@xodesign/xoframe/lightbox` | ✅ v0.5.0 | **XOlightbox** — native `<dialog>` + View Transitions lightbox (~2.1 KB) |
 | `@xodesign/xoframe/debug` | ✅ v0.4.0 | Dev-only live CLS/LCP guard overlay |
 | [XOframe for WordPress](packages/wordpress/xoframe) | 🧪 MVP, untested on live WP | Zero-config plugin: rewrites content images on the fly, dominant-color placeholders via GD. Build assets with `npm run build:wp`. |
-| framework components (React/Vue/Svelte) | planned | Next phase |
+| XOslider · framework components | planned | Next |
 
 ## Development
 

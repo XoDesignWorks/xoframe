@@ -56,8 +56,11 @@ await build({
 // importing one never pulls in the others. The reference MIT decoders
 // (evanw/thumbhash, wolt/blurhash) are bundled at build time, keeping the
 // published package free of runtime dependencies.
-for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility']) {
-  const globalName = 'XOframe' + name[0].toUpperCase() + name.slice(1)
+// The IIFE global must match the module's primary named export. Most modules
+// export XOframe<Name>; standalone-branded products (lightbox → XOlightbox) differ.
+const GLOBALS = { lightbox: 'XOlightbox' }
+for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility', 'lightbox']) {
+  const globalName = GLOBALS[name] || 'XOframe' + name[0].toUpperCase() + name.slice(1)
   await build({
     ...shared,
     entryPoints: [`src/${name}.ts`],

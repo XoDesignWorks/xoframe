@@ -218,6 +218,28 @@ XOframeVisibility.init({ debug: true }) // warns when a reserved height is far o
 Feature-detected (safe no-op where unsupported). Opt a critical/above-the-fold block out with
 `data-xo-visibility="off"`.
 
+### XOlightbox
+
+`@xodesign/xoframe/lightbox` (~2.1 KB, separate entry) is a lightbox built on the native
+`<dialog>` element (free focus trap, Esc, backdrop, `aria-modal`) and the View Transitions API
+for a smooth zoom — vs. ~50 KB for Fancybox:
+
+```html
+<a href="full-1.jpg" data-xo-lightbox="portfolio"><img src="thumb-1.jpg" alt="One"></a>
+<a href="full-2.jpg" data-xo-lightbox="portfolio" data-caption="Two"><img src="thumb-2.jpg"></a>
+<!-- or straight on an image -->
+<img data-xo-lightbox data-full="full.jpg" src="thumb.jpg" alt="Caption">
+```
+
+```js
+import { XOlightbox } from '@xodesign/xoframe/lightbox'
+XOlightbox.init()
+```
+
+Images sharing a `data-xo-lightbox` value form a group with prev/next and a counter. Keyboard:
+Esc to close, ←/→ to navigate. Captions from `data-caption` or the thumbnail's `alt`. Neighbors
+are preloaded. Reduced motion disables the transition. `XOlightbox.close()` / `.destroy()` too.
+
 ### Background images
 
 ```html
@@ -309,6 +331,7 @@ document.addEventListener('xo:load', (e) => console.log(e.detail.element))
 | `data-xo-masonry` | container | Zero-CLS masonry gallery (masonry module) |
 | `data-xo-skeleton` | block | Animated placeholder preset (skeleton module) |
 | `data-xo-visibility` + `data-xo-intrinsic-size` | block | content-visibility (visibility module) |
+| `data-xo-lightbox` | `a`, `img` | Lightbox trigger; shared value = group (lightbox module) |
 | `data-xo-bg` + `data-bg` | any | Lazy background image |
 | `data-xo-block` | any | Content block reveal |
 

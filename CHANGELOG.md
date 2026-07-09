@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] — 2026-07-09
+
+### Added
+- `@xodesign/xoframe/lightbox` (**XOlightbox**, ~2.1 KB) — first product in the XOframe family: a lightbox on the native `<dialog>` element (free focus trap, Esc, backdrop, aria-modal) + View Transitions API zoom, with graceful fallbacks. Grouped galleries via a shared `data-xo-lightbox` value, prev/next + counter, keyboard nav (←/→/Esc), neighbor preloading, captions from `data-caption`/`alt`, reduced-motion aware. ~50 KB for Fancybox → 2.1 KB here.
+
+### Notes
+- Core bundle unchanged (~2.5 KB gzip) — separate entry point.
+
 ## [0.4.0] — 2026-07-09
 
 ### Added
