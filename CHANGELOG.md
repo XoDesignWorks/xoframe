@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.8.0] — 2026-07-09
+
+### Added
+- **`data-fallback`** — comma-separated backup sources tried in order when the primary fails (AVIF→WebP→JPG format failover, or a backup CDN). `.xo-error` is set only after the whole chain is exhausted.
+- **Auto-preconnect** — a priority/LCP image on a cross-origin host gets a `<link rel="preconnect">` so its connection is warm before the request, speeding up LCP. New `preconnect` option (default true).
+
+### Notes
+- Core is now ~2.9 KB gzip, still within the 3 KB budget (headroom is getting tight — further core features will likely land as modules).
+
 ## [0.7.0] — 2026-07-09
 
 ### Added

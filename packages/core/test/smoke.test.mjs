@@ -35,6 +35,7 @@ const installDom = (bodyHtml) => {
   globalThis.Image = dom.window.Image
   globalThis.innerWidth = 1280
   globalThis.innerHeight = 800
+  globalThis.location = dom.window.location
   Object.defineProperty(globalThis, 'navigator', {
     value: dom.window.navigator,
     configurable: true
@@ -292,5 +293,59 @@ test('INP guard: batchSize 0 forces fully synchronous scanning', () => {
   XOframe.init({ batchSize: 0 })
   const imgs = [...doc.querySelectorAll('img')]
   assert.ok(imgs.every((i) => i.getAttribute('src')), 'all 120 loaded sync when disabled')
+  XOframe.destroy()
+})
+
+// --- Resilience: data-fallback chain ---
+
+test('data-fallback: first error swaps to the next source, not xo-error', () => {
+  const doc = installDom(
+    '<img data-xo data-src="a.avif" data-fallback="b.webp, c.jpg" width="800" height="600" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  assert.equal(img.getAttribute('src'), 'a.avif')
+  img.dispatchEvent(new Event('error'))
+  assert.equal(img.getAttribute('src'), 'b.webp', 'moved to first fallback')
+  assert.ok(!img.classList.contains('xo-error'), 'not failed yet')
+  img.dispatchEvent(new Event('error'))
+  assert.equal(img.getAttribute('src'), 'c.jpg', 'moved to second fallback')
+  img.dispatchEvent(new Event('load'))
+  assert.ok(img.classList.contains('xo-loaded'), 'a fallback finally loaded')
+  XOframe.destroy()
+})
+
+test('data-fallback: xo-error only after the whole chain is exhausted', () => {
+  const doc = installDom(
+    '<img data-xo data-src="a.avif" data-fallback="b.webp" width="800" height="600" alt="">'
+  )
+  XOframe.init()
+  const img = doc.querySelector('img')
+  img.dispatchEvent(new Event('error')) // → b.webp
+  img.dispatchEvent(new Event('error')) // chain exhausted → error
+  assert.ok(img.classList.contains('xo-error'))
+  XOframe.destroy()
+})
+
+// --- LCP: auto-preconnect ---
+
+test('preconnect: a cross-origin priority image injects one preconnect link', () => {
+  const doc = installDom(
+    '<img data-xo data-xo-priority="high" data-src="https://cdn.example.com/hero.jpg" width="1600" height="900" alt="">'
+  )
+  XOframe.init()
+  const link = doc.querySelector('link[rel="preconnect"]')
+  assert.ok(link, 'preconnect link injected')
+  assert.equal(link.getAttribute('href'), 'https://cdn.example.com')
+  assert.equal(link.getAttribute('crossorigin'), 'anonymous')
+  XOframe.destroy()
+})
+
+test('preconnect: can be disabled', () => {
+  const doc = installDom(
+    '<img data-xo data-xo-priority="high" data-src="https://cdn.example.com/h.jpg" width="1600" height="900" alt="">'
+  )
+  XOframe.init({ preconnect: false })
+  assert.ok(!doc.querySelector('link[rel="preconnect"]'))
   XOframe.destroy()
 })

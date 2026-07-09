@@ -132,6 +132,23 @@ tail is spread across later tasks. On a 300-image page this cut the scan's synch
 XOframe.init({ batchSize: 50 }) // default; set 0 to force fully synchronous scanning
 ```
 
+### Resilient sources (`data-fallback`)
+
+If the primary source fails, XOframe tries each comma-separated fallback before giving up — format
+failover (AVIF → WebP → JPG) or a backup CDN:
+
+```html
+<img data-xo data-src="hero.avif" data-fallback="hero.webp, hero.jpg" width="1600" height="900" alt="">
+```
+
+`.xo-error` is only set once the whole chain is exhausted.
+
+### Auto-preconnect
+
+When a priority image (`data-xo-priority="high"` / the detected LCP) is served from a cross-origin
+host, XOframe injects a `<link rel="preconnect">` so the connection is warm before the request —
+faster LCP. On by default; disable with `preconnect: false`.
+
 ### Video and iframes
 
 The same pipeline handles `<video>` and `<iframe>`:
@@ -318,6 +335,7 @@ XOframe.init({
   auto: false,                // zero-markup mode: manage plain <img> tags too
   networkAware: true,         // Save-Data / 2G: no fade, load only in-viewport
   batchSize: 50,              // INP guard: elements per task (0 = fully sync)
+  preconnect: true,           // warm the LCP image's cross-origin host
   onBeforeLoad: (el) => {},
   onLoad: (el) => {},
   onError: (el, error) => {},
@@ -359,6 +377,7 @@ document.addEventListener('xo:load', (e) => console.log(e.detail.element))
 | `data-poster` | `video` | Deferred poster image |
 | `data-src` / `data-srcset` | `img`, `source` | Deferred sources |
 | `data-sizes` | `img` | `sizes` value, or `auto` to compute from layout width |
+| `data-fallback` | `img` | Comma-separated backup sources tried on error |
 | `data-ratio` | any | Aspect ratio, e.g. `16/9` |
 | `data-color` | any | Dominant-color placeholder |
 | `data-gradient` | any | 4-corner gradient placeholder (`#c1,#c2,#c3,#c4`) |

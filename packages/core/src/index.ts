@@ -53,6 +53,11 @@ export interface XOframeOptions extends XOframeCallbacks {
    * immediate). Set 0 to disable (fully synchronous). Default: 50.
    */
   batchSize?: number
+  /**
+   * Inject a `<link rel="preconnect">` to a priority image's cross-origin host
+   * so its connection is warm before the request — speeds up LCP. Default: true.
+   */
+  preconnect?: boolean
   /** Scope for element scanning. Default: document. */
   root?: Document | Element
 }
@@ -75,7 +80,8 @@ const DEFAULTS = {
   debug: false,
   auto: false,
   networkAware: true,
-  batchSize: 50
+  batchSize: 50,
+  preconnect: true
 }
 
 const PREPARED = new WeakSet<Element>()
@@ -87,6 +93,24 @@ let blockObserver: IntersectionObserver | null = null
 let pending = new Set<Element>()
 let paused = false
 let lcpClaimed = false
+let preconnected = new Set<string>()
+
+/** Warm a cross-origin connection for a priority image's host (speeds up LCP). */
+const preconnect = (url?: string): void => {
+  if (!url) return
+  try {
+    const origin = new URL(url, location.href).origin
+    if (origin === location.origin || preconnected.has(origin)) return
+    preconnected.add(origin)
+    const link = document.createElement('link')
+    link.rel = 'preconnect'
+    link.href = origin
+    link.crossOrigin = 'anonymous'
+    document.head.appendChild(link)
+  } catch {
+    /* invalid URL — skip */
+  }
+}
 
 const emit = (el: Element, name: string, detail?: Record<string, unknown>): void => {
   el.dispatchEvent(
@@ -242,7 +266,17 @@ const loadElement = (el: Element): void => {
       },
       { once: true }
     )
-    media.addEventListener('error', (e) => finish(el, false, e), { once: true })
+    // data-fallback="b.webp,c.jpg": try each alternative before giving up
+    // (format failover AVIF→WebP→JPG, or a backup CDN).
+    const fallbacks = (id.fallback || '').split(',').map((s) => s.trim()).filter(Boolean)
+    const onError = (e: Event): void => {
+      const next = fallbacks.shift()
+      if (next) {
+        media.addEventListener('error', onError, { once: true })
+        media.src = next
+      } else finish(el, false, e)
+    }
+    media.addEventListener('error', onError, { once: true })
   }
   // Promote deferred <source> children (<picture> srcset, <video> src) first.
   if (!isImg(el))
@@ -328,6 +362,7 @@ const route = (el: Element): void => {
       lcpClaimed = true
       media.loading = 'eager'
       media.setAttribute('fetchpriority', 'high')
+      if (settings!.preconnect) preconnect(media.dataset.src || media.getAttribute('src') || undefined)
       loadElement(el)
       return
     }
@@ -438,6 +473,7 @@ const destroy = (): void => {
   blockObserver?.disconnect()
   mediaObserver = blockObserver = settings = null
   pending = new Set()
+  preconnected = new Set()
   paused = lcpClaimed = false
 }
 
