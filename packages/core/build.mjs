@@ -59,7 +59,7 @@ await build({
 // The IIFE global must match the module's primary named export. Most modules
 // export XOframe<Name>; standalone-branded products (lightbox → XOlightbox) differ.
 const GLOBALS = { lightbox: 'XOlightbox' }
-for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility', 'lightbox', 'fonts']) {
+for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility', 'lightbox', 'fonts', 'vitals']) {
   const globalName = GLOBALS[name] || 'XOframe' + name[0].toUpperCase() + name.slice(1)
   await build({
     ...shared,

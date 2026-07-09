@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.9.0] — 2026-07-09
+
+### Added
+- `@xodesign/xoframe/vitals` (~1 KB) — production Core Web Vitals reporter. Emits LCP, CLS, INP (plus FCP, TTFB) with Google ratings to an `onReport` callback for real-user monitoring (e.g. `navigator.sendBeacon`). CLS uses the session-window algorithm; INP approximates as the worst interaction latency; metrics finalize on page hide, or per change with `reportAllChanges`. Complements the dev-only debug overlay — now XOframe measures all three CWV in both dev and production.
+
+### Notes
+- Core bundle unchanged (~2.9 KB gzip) — separate entry point.
+
 ## [0.8.0] — 2026-07-09
 
 ### Added

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOframe — production Core Web Vitals reporting</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    table.v { border-collapse: collapse; width: 100%; max-width: 520px; margin: 16px 0; }
+    table.v th, table.v td { text-align: left; padding: 10px 16px; border-bottom: 1px solid #e5e2dc; font-variant-numeric: tabular-nums; }
+    .good { color: #0a7d43; font-weight: 700; }
+    .needs-improvement { color: #b26a00; font-weight: 700; }
+    .poor { color: #c02b1d; font-weight: 700; }
+    button { font: inherit; padding: 8px 16px; border-radius: 8px; border: 1px solid #d8d4cc; background: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>production vitals reporting</span></header>
+  <main>
+    <h2>Real Core Web Vitals, from real users</h2>
+    <p class="note">The debug overlay is dev-only. <code>@xodesign/xoframe/vitals</code> is the
+    production-safe reporter: it emits LCP, CLS, INP (plus FCP/TTFB) to your callback — send them
+    to analytics with <code>navigator.sendBeacon</code>. Values below update live; final values are
+    reported when the page is hidden. Click around and scroll to generate INP/CLS.</p>
+
+    <table class="v" id="table">
+      <tr><th>Metric</th><th>Value</th><th>Rating</th></tr>
+    </table>
+
+    <p><button id="btn">Click me (generates an interaction for INP)</button></p>
+    <img data-xo data-src="https://picsum.photos/seed/vitals/1200/500" data-color="#b8a88f" width="1200" height="500" alt="">
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script src="../packages/core/dist/xoframe-vitals.min.js"></script>
+  <script>
+    XOframe.init()
+    const rows = {}
+    XOframeVitals.init({
+      reportAllChanges: true,
+      onReport: (m) => {
+        // In production you'd do: navigator.sendBeacon('/vitals', JSON.stringify(m))
+        let row = rows[m.name]
+        if (!row) {
+          row = rows[m.name] = document.getElementById('table').insertRow()
+          row.insertCell().textContent = m.name
+          row.insertCell(); row.insertCell()
+        }
+        row.cells[1].textContent = m.name === 'CLS' ? m.value.toFixed(3) : Math.round(m.value) + ' ms'
+        row.cells[2].textContent = m.rating
+        row.cells[2].className = m.rating
+      }
+    })
+    document.getElementById('btn').addEventListener('click', () => {
+      const t = performance.now() + 120; while (performance.now() < t) {} // simulate slow handler
+    })
+  </script>
+</body>
+</html>

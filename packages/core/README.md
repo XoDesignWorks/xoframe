@@ -415,6 +415,22 @@ XOframeDebug.init()
 
 Or as a classic script: `<script src=".../xoframe-debug.min.js" data-xo-auto></script>`
 
+## Production vitals reporting
+
+The debug overlay is dev-only. `@xodesign/xoframe/vitals` (~1 KB, separate entry) is the
+production-safe reporter — it emits **LCP, CLS, INP** (plus FCP, TTFB) with Google ratings to your
+callback, so you can send field data to analytics:
+
+```js
+import { XOframeVitals } from '@xodesign/xoframe/vitals'
+XOframeVitals.init({
+  onReport: (m) => navigator.sendBeacon('/vitals', JSON.stringify(m)) // { name, value, rating }
+})
+```
+
+Values finalize when the page is hidden/unloaded (or per change with `reportAllChanges: true`).
+CLS uses the session-window algorithm; INP approximates as the worst interaction latency.
+
 ## Zero-CLS checklist
 
 1. Always set `width` + `height` (or `data-ratio`) — the browser reserves the box before anything loads.

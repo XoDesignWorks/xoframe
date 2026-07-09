@@ -33,6 +33,7 @@ separate file that never reaches your bundle unless used:
 | `@xodesign/xoframe/visibility` | ✅ v0.4.0 | content-visibility manager for off-screen blocks (~1 KB) |
 | `@xodesign/xoframe/lightbox` | ✅ v0.5.0 | **XOlightbox** — native `<dialog>` + View Transitions lightbox (~2.1 KB) |
 | `@xodesign/xoframe/fonts` | ✅ v0.7.0 | Web font stability: size-adjusted fallback to stop font CLS (~1.2 KB) |
+| `@xodesign/xoframe/vitals` | ✅ v0.9.0 | Production LCP/CLS/INP/FCP/TTFB reporting to a callback (~1 KB) |
 | `@xodesign/xoframe/debug` | ✅ v0.4.0 | Dev-only live CLS/LCP guard overlay |
 | [XOframe for WordPress](packages/wordpress/xoframe) | 🧪 MVP, untested on live WP | Zero-config plugin: rewrites content images on the fly, dominant-color placeholders via GD. Build assets with `npm run build:wp`. |
 | XOslider · framework components | planned | Next |
