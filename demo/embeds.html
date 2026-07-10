@@ -40,6 +40,25 @@
 
     <div class="spacer">scroll ↓</div>
 
+    <h2>More facades: Maps &amp; Spotify</h2>
+    <p class="note">The same click-to-load facade covers Google Maps, Spotify, Calendly and any
+    generic iframe — each embed's heavy third-party payload loads only on click.</p>
+    <div data-xo-embed="maps" data-embed-id="Eiffel Tower, Paris" data-title="Map" data-color="#dde3e8" style="aspect-ratio:16/9"></div>
+    <div style="height:16px"></div>
+    <div data-xo-embed="spotify" data-embed-id="track/4cOdK2wGLETKBW3PvgPWqT" data-title="A track" data-color="#1db954" data-ratio="21/9"></div>
+
+    <div class="spacer">scroll ↓</div>
+
+    <h2>Background video (autoplay only on screen)</h2>
+    <p class="note"><code>@xodesign/xoframe/video</code> plays a muted background video only while
+    it's in the viewport and pauses it when scrolled away — saving CPU, battery and INP.</p>
+    <video data-xo-video muted loop playsinline
+           poster="https://picsum.photos/seed/bgvid/1200/500"
+           data-src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+           style="width:100%;border-radius:8px" width="1200" height="500"></video>
+
+    <div class="spacer">scroll ↓</div>
+
     <h2>Intent strategy</h2>
     <p class="note">This image has <code>data-xo-strategy="intent"</code> — it loads on the first
     hover/focus/touch, not on scroll. Great for tab panels and dropdown previews.</p>
@@ -50,9 +69,11 @@
 
   <script src="../packages/core/dist/xoframe.min.js"></script>
   <script src="../packages/core/dist/xoframe-embed.min.js"></script>
+  <script src="../packages/core/dist/xoframe-video.min.js"></script>
   <script>
     XOframe.init()
     XOframeEmbed.init()
+    XOframeVideo.init()
     document.addEventListener('xo:embed', e => console.log('embed activated:', e.detail.src))
   </script>
 </body>

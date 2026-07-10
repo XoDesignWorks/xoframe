@@ -29,6 +29,21 @@ const PROVIDERS: Record<string, Provider> = {
   vimeo: {
     url: (id) => `https://player.vimeo.com/video/${id}?autoplay=1`,
     origins: ['https://player.vimeo.com', 'https://i.vimeocdn.com']
+  },
+  // id = a place query, e.g. data-embed-id="Eiffel Tower, Paris"
+  maps: {
+    url: (id) => `https://www.google.com/maps?q=${encodeURIComponent(id)}&output=embed`,
+    origins: ['https://www.google.com', 'https://maps.googleapis.com']
+  },
+  // id = "track/ID", "playlist/ID", "episode/ID", …
+  spotify: {
+    url: (id) => `https://open.spotify.com/embed/${id}`,
+    origins: ['https://open.spotify.com', 'https://i.scdn.co']
+  },
+  // id = your Calendly path, e.g. data-embed-id="acme/intro"
+  calendly: {
+    url: (id) => `https://calendly.com/${id}`,
+    origins: ['https://calendly.com', 'https://assets.calendly.com']
   }
 }
 
@@ -68,7 +83,8 @@ const facade = (el: HTMLElement): void => {
 
   const d = el.dataset
   const provider = PROVIDERS[d.xoEmbed || '']
-  const videoId = d.video || ''
+  // data-video (video providers) or the general data-embed-id (maps/spotify/…).
+  const videoId = d.video || d.embedId || ''
   const src = d.embedSrc || (provider && videoId ? provider.url(videoId) : '')
   if (!src) return
 

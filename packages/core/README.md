@@ -169,8 +169,14 @@ play button and injects the real iframe only on click, with automatic `preconnec
 ```html
 <div data-xo-embed="youtube" data-video="aqz-KE-bpKQ" data-title="Big Buck Bunny"></div>
 <div data-xo-embed="vimeo" data-video="76979871" data-poster="poster.jpg"></div>
+<!-- non-video providers use data-embed-id -->
+<div data-xo-embed="maps" data-embed-id="Eiffel Tower, Paris"></div>
+<div data-xo-embed="spotify" data-embed-id="track/4cOdK2wGLETKBW3PvgPWqT"></div>
+<div data-xo-embed="calendly" data-embed-id="acme/intro"></div>
 <div data-xo-embed data-embed-src="https://example.com/embed" data-poster="poster.jpg"></div>
 ```
+
+Providers: `youtube`, `vimeo`, `maps`, `spotify`, `calendly`, or a generic `data-embed-src`.
 
 ```js
 import { XOframeEmbed } from '@xodesign/xoframe/embed'
@@ -179,6 +185,23 @@ XOframeEmbed.init()
 
 Keyboard-accessible (`role="button"`, Enter/Space), YouTube goes through `youtube-nocookie.com`,
 fires a bubbling `xo:embed` event on activation.
+
+### Background video (play only on screen)
+
+`@xodesign/xoframe/video` (~0.9 KB, separate entry) autoplays a muted background video only while
+it is in the viewport and pauses it when scrolled away — saving CPU, battery and main-thread work.
+It also lazily applies `data-src`/`data-poster` on first view.
+
+```html
+<video data-xo-video muted loop playsinline poster="poster.jpg" data-src="clip.mp4"></video>
+```
+
+```js
+import { XOframeVideo } from '@xodesign/xoframe/video'
+XOframeVideo.init() // { threshold: 0.25, respectReducedMotion: true }
+```
+
+Autoplay rejections (browser policy) are swallowed; reduced-motion users get the poster only.
 
 ### Intent strategy
 

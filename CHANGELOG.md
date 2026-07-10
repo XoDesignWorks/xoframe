@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.10.0] — 2026-07-09
+
+### Added
+- **More embed facades** — `maps` (Google Maps), `spotify` and `calendly` join `youtube`/`vimeo`/generic. Non-video providers take `data-embed-id`. Each third-party payload still loads only on click, with hover `preconnect`. Embed module is ~1.8 KB.
+- `@xodesign/xoframe/video` (~0.9 KB) — background video that autoplays only while on screen and pauses when scrolled away (saves CPU, battery, main-thread work). Lazily applies `data-src`/`data-poster`, swallows autoplay-policy rejections, and honours `prefers-reduced-motion`.
+
+### Notes
+- Core bundle unchanged (~2.9 KB gzip). First test coverage for the embed module (8 tests).
+
 ## [0.9.0] — 2026-07-09
 
 ### Added
