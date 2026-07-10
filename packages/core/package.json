@@ -1,6 +1,6 @@
 {
   "name": "@xodesign/xoframe",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Zero-CLS progressive media loading. Reserve space, show placeholder, load smart, reveal smoothly — in ~2 KB.",
   "license": "MIT",
   "type": "module",
@@ -64,6 +64,18 @@
     "./slider": {
       "types": "./dist/slider.d.ts",
       "import": "./dist/xoframe-slider.esm.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/xoframe-react.esm.js"
+    }
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
     }
   },
   "sideEffects": false,
@@ -82,7 +94,7 @@
   ],
   "scripts": {
     "build": "node build.mjs && tsc -p tsconfig.json",
-    "test": "node --test test/smoke.test.mjs test/placeholders.test.mjs test/masonry.test.mjs test/skeleton.test.mjs test/visibility.test.mjs test/lightbox.test.mjs test/fonts.test.mjs test/vitals.test.mjs test/embed.test.mjs test/video.test.mjs test/slider.test.mjs",
+    "test": "node --test test/smoke.test.mjs test/placeholders.test.mjs test/masonry.test.mjs test/skeleton.test.mjs test/visibility.test.mjs test/lightbox.test.mjs test/fonts.test.mjs test/vitals.test.mjs test/embed.test.mjs test/video.test.mjs test/slider.test.mjs test/react.test.mjs",
     "prepublishOnly": "npm run build && npm test"
   },
   "repository": {
@@ -93,9 +105,13 @@
   "bugs": "https://github.com/xoframe/xoframe/issues",
   "author": "Denis Malov",
   "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "blurhash": "^2.0.5",
     "esbuild": "^0.25.0",
     "jsdom": "^29.1.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "thumbhash": "^0.1.1",
     "typescript": "^5.6.0"
   }

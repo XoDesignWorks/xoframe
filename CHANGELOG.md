@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.12.0] — 2026-07-09
+
+### Added
+- `@xodesign/xoframe/react` (~1.7 KB) — `XOImage`, `XOBackground`, `XOBlock`: thin wrappers that render the same `data-xo*` markup and register with the core on mount (releasing on unmount). No logic is duplicated. React is an **optional peer dependency**, and the core is imported as an external module so it is never bundled twice.
+
+### Notes
+- Core bundle unchanged (~2.9 KB gzip).
+
 ## [0.11.0] — 2026-07-09
 
 ### Added

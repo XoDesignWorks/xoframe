@@ -464,6 +464,27 @@ XOframeDebug.init()
 
 Or as a classic script: `<script src=".../xoframe-debug.min.js" data-xo-auto></script>`
 
+## React
+
+`@xodesign/xoframe/react` (~1.7 KB, separate entry, React is an optional peer dependency) provides
+thin wrappers — no logic is duplicated, they render the same `data-xo*` markup and register with
+the core:
+
+```jsx
+import { XOframe } from '@xodesign/xoframe'
+import { XOImage, XOBackground, XOBlock } from '@xodesign/xoframe/react'
+
+XOframe.init() // once, at app startup
+
+<XOImage src="/hero.jpg" width={1600} height={900} priority alt="Hero" />
+<XOImage src="/photo.jpg" color="#d8c6a4" fallback="/photo.webp, /photo.jpg" width={1200} height={800} alt="" />
+<XOBackground bg="/section.jpg" bgMobile="/m.jpg" ratio="16/9" color="#e9e2d8" />
+<XOBlock>…revealed on scroll…</XOBlock>
+```
+
+Components mounted before `init()` are picked up by its initial scan; ones mounted later register
+themselves on mount and release on unmount.
+
 ## Production vitals reporting
 
 The debug overlay is dev-only. `@xodesign/xoframe/vitals` (~1 KB, separate entry) is the

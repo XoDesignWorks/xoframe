@@ -78,6 +78,16 @@ for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'vi
   })
 }
 
+// React adapter — ESM only (React users bundle). React stays external (peer dep).
+await build({
+  ...shared,
+  entryPoints: ['src/react.tsx'],
+  format: 'esm',
+  jsx: 'automatic',
+  external: ['react', 'react/jsx-runtime', '@xodesign/xoframe'],
+  outfile: 'dist/xoframe-react.esm.js'
+})
+
 // UMD — wrap a minified CJS bundle
 const cjsMin = await build({
   ...shared,

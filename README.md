@@ -36,9 +36,10 @@ separate file that never reaches your bundle unless used:
 | `@xodesign/xoframe/vitals` | ✅ v0.9.0 | Production LCP/CLS/INP/FCP/TTFB reporting to a callback (~1 KB) |
 | `@xodesign/xoframe/video` | ✅ v0.10.0 | Background video: autoplay only on screen, pause off screen (~0.9 KB) |
 | `@xodesign/xoframe/slider` | ✅ v0.11.0 | **XOslider** — native scroll-snap carousel (~2.4 KB, vs ~40 KB Swiper) |
+| `@xodesign/xoframe/react` | ✅ v0.12.0 | `XOImage` / `XOBackground` / `XOBlock` wrappers (~1.7 KB, React optional peer) |
 | `@xodesign/xoframe/debug` | ✅ v0.4.0 | Dev-only live CLS/LCP guard overlay |
 | [XOframe for WordPress](packages/wordpress/xoframe) | 🧪 MVP, untested on live WP | Zero-config plugin: rewrites content images on the fly, dominant-color placeholders via GD. Build assets with `npm run build:wp`. |
-| XOslider · framework components | planned | Next |
+| Vue / Svelte adapters | planned | Next |
 
 ## Development
 
