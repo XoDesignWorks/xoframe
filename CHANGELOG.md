@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.14.0] — 2026-07-09
+
+### Removed
+- **`@xodesign/xoframe/slider` is gone.** XOcarousel is now the single carousel product — one engine, one entry, one set of CSS classes. The deprecated shim existed only to protect 0.11.x installs; the npm download stats show every download so far landed on 0.1.0, so nothing depended on it. Use `@xodesign/xoframe/carousel` with `[data-xo-carousel]` markup (`axis: 'y'` gives the vertical variant).
+
+### Notes
+- Breaking, but pre-1.0 and with zero consumers. Also removed the build-time plugin that existed solely to keep the shim from duplicating the engine.
+
 ## [0.13.1] — 2026-07-09
 
 ### Fixed

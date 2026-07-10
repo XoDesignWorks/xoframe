@@ -351,11 +351,6 @@ which then only upgrades it with arrows, dots and autoplay:
 
 `loop` wraps at the ends rather than cloning slides.
 
-### XOslider (deprecated)
-
-`@xodesign/xoframe/slider` still works — it is XOcarousel defaulting to the old `[data-xo-slider]`
-selector. Migrate to `/carousel`; note the CSS classes changed (`.xo-slider-*` → `.xo-car-*`).
-
 ### Web font stability
 
 `@xodesign/xoframe/fonts` (~1.2 KB, separate entry) tackles the **#2 cause of CLS after images**:

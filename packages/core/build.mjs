@@ -1,9 +1,11 @@
 import { build } from 'esbuild'
-import { copyFile, readFile, writeFile, mkdir } from 'node:fs/promises'
+import { copyFile, readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
 
 const SIZE_BUDGET = 3 * 1024 // 3 KB gzip hard limit for the CDN build
 
+// Start clean: otherwise artifacts of removed modules linger in dist and ship.
+await rm('dist', { recursive: true, force: true })
 await mkdir('dist', { recursive: true })
 
 // `.css` imports are inlined as text so a module can inject its own styles,
@@ -60,36 +62,14 @@ await build({
 // published package free of runtime dependencies.
 // The IIFE global must match the module's primary named export. Most modules
 // export XOframe<Name>; standalone-branded products (lightbox → XOlightbox) differ.
-const GLOBALS = { lightbox: 'XOlightbox', slider: 'XOslider', carousel: 'XOcarousel' }
+const GLOBALS = { lightbox: 'XOlightbox', carousel: 'XOcarousel' }
 
-/**
- * Keep a module's sibling dependency out of its ESM bundle: rewrite the source
- * import to the sibling's published file so bundlers resolve both entries to the
- * *same* module. Without this, importing `/slider` and `/carousel` together
- * would ship two engines with two separate instance registries.
- */
-const externalSibling = (from, to) => ({
-  name: 'external-sibling',
-  setup(b) {
-    b.onResolve({ filter: new RegExp(`^\\./${from}$`) }, () => ({
-      path: `./xoframe-${to}.esm.js`,
-      external: true
-    }))
-  }
-})
-
-// Modules whose ESM build must not inline a sibling: entry → sibling it imports.
-const ESM_SIBLING = { slider: 'carousel' }
-
-for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility', 'lightbox', 'fonts', 'vitals', 'video', 'carousel', 'slider']) {
+for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility', 'lightbox', 'fonts', 'vitals', 'video', 'carousel']) {
   const globalName = GLOBALS[name] || 'XOframe' + name[0].toUpperCase() + name.slice(1)
-  const sibling = ESM_SIBLING[name]
   await build({
     ...shared,
     entryPoints: [`src/${name}.ts`],
     format: 'esm',
-    // The IIFE build below stays self-contained (a CDN <script> can't import).
-    plugins: sibling ? [externalSibling(sibling, sibling)] : [],
     outfile: `dist/xoframe-${name}.esm.js`
   })
   await build({
