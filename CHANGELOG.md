@@ -3,6 +3,11 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.14.1] — 2026-07-09
+
+### Fixed
+- The README headline and the npm package description still advertised a "~2 KB" core; it has been ~2.9 KB since the INP guard, `data-fallback` and auto-preconnect landed. Corrected — a performance library must not misstate its own size.
+
 ## [0.14.0] — 2026-07-09
 
 ### Removed

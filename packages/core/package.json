@@ -1,7 +1,7 @@
 {
   "name": "@xodesign/xoframe",
-  "version": "0.14.0",
-  "description": "Zero-CLS progressive media loading. Reserve space, show placeholder, load smart, reveal smoothly — in ~2 KB.",
+  "version": "0.14.1",
+  "description": "Zero-CLS progressive media loading in a ~2.9 KB core. Reserve space, show placeholder, load smart, reveal smoothly. Helps CLS, LCP and INP.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/xoframe.cjs",

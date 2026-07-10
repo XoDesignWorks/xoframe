@@ -4,7 +4,7 @@
 
 Make image-heavy pages feel instant: reserve space → show placeholder → choose priority → load media → reveal smoothly → prevent layout shift.
 
-- ~**2 KB gzip**, zero dependencies, framework-agnostic
+- ~**2.9 KB gzip** core, zero dependencies, framework-agnostic (every extra feature is a separate entry point you only pay for if you import it)
 - Native browser features first: `IntersectionObserver`, `loading`, `decoding`, `fetchpriority`, `aspect-ratio`
 - **LCP-aware**: never lazy-loads your hero image
 - **Zero CLS** with correct `width`/`height` or `data-ratio`
