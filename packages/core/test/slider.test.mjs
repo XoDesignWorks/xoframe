@@ -6,6 +6,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { JSDOM } from 'jsdom'
 import { XOslider } from '../dist/xoframe-slider.esm.js'
+import { XOcarousel } from '../dist/xoframe-carousel.esm.js'
 
 const setup = (attr) => {
   const dom = new JSDOM(
@@ -32,6 +33,16 @@ test('XOslider forwards options to the carousel (vertical axis works)', () => {
   XOslider.init({ axis: 'y' })
   assert.ok(doc.querySelector('[data-xo-slider]').classList.contains('xo-car-y'))
   XOslider.destroy()
+})
+
+test('slider and carousel share one engine — no duplicated instance registry', () => {
+  const doc = setup('data-xo-slider')
+  XOslider.init()
+  assert.ok(doc.querySelector('.xo-car-track'), 'slider built a carousel')
+  // If /slider bundled its own copy of the engine, this would be a no-op and
+  // the track would survive — proving two separate instance registries.
+  XOcarousel.destroy()
+  assert.ok(!doc.querySelector('.xo-car-track'), 'carousel.destroy() tore down the slider instance')
 })
 
 test('XOslider.destroy restores the DOM', () => {

@@ -3,6 +3,11 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.13.1] — 2026-07-09
+
+### Fixed
+- `@xodesign/xoframe/slider` inlined a full copy of the carousel engine (11.8 KB). Importing both `/slider` and `/carousel` shipped the engine twice **and** created two separate instance registries, so `XOcarousel.destroy()` silently ignored slider instances. The ESM slider build now imports the carousel as an external sibling module (430 B, down from 11.8 KB), so bundlers resolve both entries to one module. The CDN/IIFE build stays self-contained, as a `<script>` cannot import.
+
 ## [0.13.0] — 2026-07-09
 
 ### Added
