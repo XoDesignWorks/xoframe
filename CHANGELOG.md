@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.11.0] — 2026-07-09
+
+### Added
+- `@xodesign/xoframe/slider` (**XOslider**, ~2.4 KB) — second product in the XOframe family: a carousel built on native CSS `scroll-snap`, so the browser provides momentum, touch and trackpad scrolling. No animation loop, no transform math, no scroll listener; active tracking uses `IntersectionObserver` to keep INP low. Arrows, dots, autoplay (pauses on hover/focus/tab-hidden), `slidesPerView`, `gap`, wrap-around `loop`, keyboard nav, full ARIA carousel semantics, reduced-motion aware, `xo:slide` event, and instance API (`next`/`prev`/`goTo`/`index`/`destroy`). ~40 KB for Swiper → 2.4 KB here.
+
+### Notes
+- Core bundle unchanged (~2.9 KB gzip) — separate entry point.
+- `loop` wraps at the ends rather than cloning slides for a seamless infinite track.
+
 ## [0.10.0] — 2026-07-09
 
 ### Added

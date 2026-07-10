@@ -293,6 +293,32 @@ Images sharing a `data-xo-lightbox` value form a group with prev/next and a coun
 Esc to close, ←/→ to navigate. Captions from `data-caption` or the thumbnail's `alt`. Neighbors
 are preloaded. Reduced motion disables the transition. `XOlightbox.close()` / `.destroy()` too.
 
+### XOslider
+
+`@xodesign/xoframe/slider` (~2.4 KB, separate entry) is a carousel where the **browser does the
+hard part**: native CSS `scroll-snap` provides momentum, touch and trackpad scrolling, so there is
+no animation loop, no transform math and no scroll listener. JS only adds arrows, dots, autoplay
+and active tracking (via `IntersectionObserver`, keeping INP low) — vs ~40 KB for Swiper.
+
+```html
+<div data-xo-slider>
+  <div><img data-xo data-src="1.jpg" width="1200" height="800" alt=""></div>
+  <div><img data-xo data-src="2.jpg" width="1200" height="800" alt=""></div>
+</div>
+```
+
+```js
+import { XOslider } from '@xodesign/xoframe/slider'
+XOslider.init('[data-xo-slider]', {
+  slidesPerView: 1, gap: 16, arrows: true, dots: true, loop: true, autoplay: 0, label: 'Photos'
+})
+```
+
+Returns instances with `next()`, `prev()`, `goTo(i)`, `index`, `destroy()`, and fires a bubbling
+`xo:slide` event. Accessible by default (`role="region"`, `aria-roledescription="carousel"`,
+labelled slides, arrow keys). Autoplay pauses on hover/focus and when the tab is hidden; reduced
+motion disables autoplay and smooth scrolling. `loop` wraps at the ends (it does not clone slides).
+
 ### Web font stability
 
 `@xodesign/xoframe/fonts` (~1.2 KB, separate entry) tackles the **#2 cause of CLS after images**:

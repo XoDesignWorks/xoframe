@@ -11,5 +11,5 @@
     "rootDir": "src",
     "skipLibCheck": true
   },
-  "include": ["src/index.ts", "src/debug.ts", "src/embed.ts", "src/thumbhash.ts", "src/blurhash.ts", "src/masonry.ts", "src/skeleton.ts", "src/visibility.ts", "src/lightbox.ts", "src/fonts.ts", "src/vitals.ts", "src/video.ts"]
+  "include": ["src/index.ts", "src/debug.ts", "src/embed.ts", "src/thumbhash.ts", "src/blurhash.ts", "src/masonry.ts", "src/skeleton.ts", "src/visibility.ts", "src/lightbox.ts", "src/fonts.ts", "src/vitals.ts", "src/video.ts", "src/slider.ts"]
 }
