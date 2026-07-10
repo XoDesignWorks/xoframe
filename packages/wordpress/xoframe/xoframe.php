@@ -78,8 +78,8 @@ add_filter( 'wp_content_img_tag', function ( $img, $context, $attachment_id ) {
 	if ( ! $p->next_tag( 'img' ) ) {
 		return $img;
 	}
-	xoframe_process_img( $p, (int) $attachment_id );
-	return $p->get_updated_html();
+	$deferred = xoframe_process_img( $p, (int) $attachment_id );
+	return xoframe_with_noscript( $p->get_updated_html(), $img, $deferred );
 }, 20, 3 );
 
 /**
@@ -89,42 +89,54 @@ add_filter( 'post_thumbnail_html', function ( $html ) {
 	if ( ! xoframe_should_run() || '' === $html || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
 		return $html;
 	}
-	$p = new WP_HTML_Tag_Processor( $html );
+	$p        = new WP_HTML_Tag_Processor( $html );
+	$deferred = false;
 	while ( $p->next_tag( 'img' ) ) {
 		$id = 0;
 		if ( preg_match( '/wp-image-(\d+)/', (string) $p->get_attribute( 'class' ), $m ) ) {
 			$id = (int) $m[1];
 		}
-		xoframe_process_img( $p, $id );
+		$deferred = xoframe_process_img( $p, $id ) || $deferred;
 	}
-	return $p->get_updated_html();
+	return xoframe_with_noscript( $p->get_updated_html(), $html, $deferred );
 }, 20 );
 
 /**
  * Turn one <img> into XOframe markup, in place.
+ *
+ * @return bool True when the sources were deferred (the caller should then add
+ *              a <noscript> fallback so no-JS clients and crawlers still get
+ *              the real image).
  */
-function xoframe_process_img( WP_HTML_Tag_Processor $p, int $attachment_id ): void {
+function xoframe_process_img( WP_HTML_Tag_Processor $p, int $attachment_id ): bool {
 	// Already managed, or explicitly excluded.
 	if ( null !== $p->get_attribute( 'data-xo' ) || null !== $p->get_attribute( 'data-src' ) ) {
-		return;
+		return false;
 	}
 	if ( null !== $p->get_attribute( 'data-xo-skip' )
 		|| false !== strpos( (string) $p->get_attribute( 'class' ), 'skip-lazy' ) ) {
-		return;
+		return false;
 	}
 
 	$p->set_attribute( 'data-xo', true );
+
+	if ( $attachment_id > 0 ) {
+		$color = xoframe_dominant_color( $attachment_id );
+		if ( '' !== $color ) {
+			$p->set_attribute( 'data-color', $color );
+		}
+	}
 
 	// WordPress marked this as the likely LCP image: keep src intact so the
 	// browser preload scanner sees it. XOframe only manages priority + reveal.
 	if ( 'high' === $p->get_attribute( 'fetchpriority' ) || 'eager' === $p->get_attribute( 'loading' ) ) {
 		$p->set_attribute( 'data-xo-priority', 'high' );
-		return;
+		return false;
 	}
 
 	// Below the fold (per WP heuristics): defer sources so XOframe orchestrates.
 	if ( 'lazy' !== $p->get_attribute( 'loading' ) || ! apply_filters( 'xoframe_defer_images', true ) ) {
-		return;
+		return false;
 	}
 
 	foreach ( array( 'src', 'srcset', 'sizes' ) as $attr ) {
@@ -136,36 +148,63 @@ function xoframe_process_img( WP_HTML_Tag_Processor $p, int $attachment_id ): vo
 	}
 	$p->remove_attribute( 'loading' ); // XOframe's IntersectionObserver takes over.
 
-	// Transparent SVG stand-in keeps the box (and avoids alt-text flash) pre-load.
+	// Transparent SVG stand-in keeps the box (and avoids an alt-text flash)
+	// pre-load. base64 avoids any data-URI escaping pitfalls.
 	$width  = (int) $p->get_attribute( 'width' );
 	$height = (int) $p->get_attribute( 'height' );
 	if ( $width > 0 && $height > 0 ) {
-		$p->set_attribute(
-			'src',
-			"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='{$width}' height='{$height}'%3E%3C/svg%3E"
+		$svg = sprintf(
+			'<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d"></svg>',
+			$width,
+			$height
 		);
+		$p->set_attribute( 'src', 'data:image/svg+xml;base64,' . base64_encode( $svg ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
 	}
 
-	if ( $attachment_id > 0 ) {
-		$color = xoframe_dominant_color( $attachment_id );
-		if ( '' !== $color ) {
-			$p->set_attribute( 'data-color', $color );
-		}
-	}
+	return true;
+}
+
+/**
+ * Append a <noscript> copy of the untouched image so no-JS clients and
+ * crawlers that don't execute JavaScript still receive the real <img>.
+ */
+function xoframe_with_noscript( string $html, string $original, bool $deferred ): string {
+	return $deferred ? $html . '<noscript>' . $original . '</noscript>' : $html;
 }
 
 /**
  * Cached dominant color for an attachment ('' when unavailable).
+ *
+ * Rendering a page must NEVER decode an image: with an existing media library
+ * (uploaded before this plugin), a cache miss on every <img> would read and
+ * decode each file while the response is being generated. So on a miss we
+ * return '' and queue the work for a background cron run — the color simply
+ * appears on a later render.
+ *
+ * @param bool $compute Decode now (upload/cron context) instead of deferring.
  */
-function xoframe_dominant_color( int $attachment_id ): string {
+function xoframe_dominant_color( int $attachment_id, bool $compute = false ): string {
 	$cached = get_post_meta( $attachment_id, XOFRAME_META_COLOR, true );
 	if ( '' !== $cached && false !== $cached ) {
 		return 'none' === $cached ? '' : (string) $cached;
 	}
+
+	if ( ! $compute ) {
+		if ( ! wp_next_scheduled( 'xoframe_compute_color', array( $attachment_id ) ) ) {
+			wp_schedule_single_event( time() + 5, 'xoframe_compute_color', array( $attachment_id ) );
+		}
+		return '';
+	}
+
 	$color = xoframe_compute_dominant_color( $attachment_id );
 	update_post_meta( $attachment_id, XOFRAME_META_COLOR, '' === $color ? 'none' : $color );
 	return $color;
 }
+
+/** Background job queued by a front-end cache miss. */
+add_action( 'xoframe_compute_color', function ( $attachment_id ) {
+	xoframe_dominant_color( (int) $attachment_id, true );
+} );
 
 /**
  * Average color via GD: downscale the smallest thumbnail to a single pixel.
@@ -222,7 +261,7 @@ function xoframe_compute_dominant_color( int $attachment_id ): string {
  */
 add_filter( 'wp_generate_attachment_metadata', function ( $metadata, $attachment_id ) {
 	if ( wp_attachment_is_image( $attachment_id ) ) {
-		xoframe_dominant_color( (int) $attachment_id );
+		xoframe_dominant_color( (int) $attachment_id, true );
 	}
 	return $metadata;
 }, 20, 2 );

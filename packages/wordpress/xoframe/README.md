@@ -34,6 +34,14 @@ add_filter( 'xoframe_init_options', function ( $options ) { // JS init options
 
 Requires WordPress 6.3+ (uses `WP_HTML_Tag_Processor` and script loading strategies) and PHP 7.4+.
 
+## Design notes
+
+- **Rendering never decodes an image.** A dominant-color cache miss on the front end returns nothing and queues a one-off cron job (`xoframe_compute_color`); the color appears on a later render. New uploads are computed immediately on `wp_generate_attachment_metadata`. This keeps TTFB flat on sites whose media library predates the plugin.
+- **`<noscript>` fallback.** Deferred images get a `<noscript>` copy of the untouched `<img>`, so no-JS clients and crawlers that don't execute JavaScript still receive the real image.
+- The transparent placeholder is a base64 `data:image/svg+xml` URI, avoiding data-URI escaping pitfalls.
+
 ## Status
 
-MVP — not yet tested against a live WordPress install. Known gaps for the next iteration: `<noscript>` fallbacks for deferred images, a settings screen, WooCommerce gallery coverage, ThumbHash placeholders (Pro), compatibility detection for other lazy-load plugins.
+**MVP — still not executed against a live WordPress install.** There is no PHP or Docker on the development machine, so not even `php -l` has been run. The code has been reviewed and hardened, but treat it as unverified until it is activated on a real site.
+
+Known gaps for the next iteration: a settings screen, WooCommerce gallery coverage, ThumbHash placeholders, compatibility detection for other lazy-load plugins, and a WP-CLI command to backfill dominant colors for an existing media library.
