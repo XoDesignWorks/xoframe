@@ -3,6 +3,22 @@
 All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/) and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.13.0] — 2026-07-09
+
+### Added
+- `@xodesign/xoframe/carousel` (**XOcarousel**, ~3.2 KB) — supersedes XOslider with a **vertical axis** (`axis: 'y'`) alongside the horizontal one, plus:
+  - **Mouse drag-to-scroll**, the one thing a native scroll container lacks (touch/trackpad stay native, and drag is not hijacked on touch);
+  - **WCAG 2.2.2 compliance**: autoplay is off by default, and when enabled it ships a real pause/play button — once the user pauses, it stays paused (hovering out no longer resumes it);
+  - **Live-region announcements** ("Slide 2 of 5") for screen readers;
+  - **Scrolling without JavaScript (opt-in)**: link `@xodesign/xoframe/carousel.css` and pre-render the `.xo-car-track` wrapper, and the carousel is a usable snapping strip before JS loads; JS then only upgrades it with arrows, dots and autoplay.
+- `@xodesign/xoframe/carousel.css` — the carousel stylesheet, also inlined into the module at build time (single source of truth).
+
+### Changed
+- `@xodesign/xoframe/slider` (**deprecated**) is now a thin shim over XOcarousel that keeps the old `[data-xo-slider]` selector working. The CSS classes changed (`.xo-slider-*` → `.xo-car-*`).
+
+### Notes
+- Still ~3.2 KB with arrows, dots, ARIA and autoplay included — compare Embla/keen-slider (~7 KB, headless), Splide (~27 KB), Swiper (~47 KB, ~20 KB tree-shaken). Core bundle unchanged (~2.9 KB gzip).
+
 ## [0.12.0] — 2026-07-09
 
 ### Added

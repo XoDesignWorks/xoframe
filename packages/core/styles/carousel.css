@@ -1,0 +1,22 @@
+.xo-car{position:relative}
+.xo-car-track{position:relative;display:flex;gap:var(--xo-car-gap,16px);overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none;scroll-behavior:smooth}
+.xo-car-track::-webkit-scrollbar{display:none}
+.xo-car-track>*{scroll-snap-align:start;min-width:0;min-height:0;flex:0 0 calc((100% - (var(--xo-car-per,1) - 1) * var(--xo-car-gap,16px)) / var(--xo-car-per,1))}
+.xo-car-x .xo-car-track{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory}
+.xo-car-y .xo-car-track{flex-direction:column;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;height:var(--xo-car-height,420px)}
+.xo-car-dragging .xo-car-track{scroll-snap-type:none;scroll-behavior:auto;cursor:grabbing;user-select:none}
+.xo-car-btn{position:absolute;z-index:2;border:0;cursor:pointer;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.xo-car-btn:hover{background:rgba(0,0,0,.85)}
+.xo-car-btn[disabled]{opacity:.35;cursor:default}
+.xo-car-x .xo-car-prev{left:8px;top:50%;transform:translateY(-50%)}
+.xo-car-x .xo-car-next{right:8px;top:50%;transform:translateY(-50%)}
+.xo-car-y .xo-car-prev{top:8px;left:50%;transform:translateX(-50%)}
+.xo-car-y .xo-car-next{bottom:8px;left:50%;transform:translateX(-50%)}
+.xo-car-play{right:8px;bottom:8px;width:32px;height:32px;font-size:13px}
+.xo-car-dots{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.xo-car-y .xo-car-dots{position:absolute;right:8px;top:50%;transform:translateY(-50%);flex-direction:column;margin:0}
+.xo-car-dot{width:8px;height:8px;padding:0;border:0;border-radius:50%;cursor:pointer;background:var(--xo-car-dot,#c9c6c0);transition:background .15s}
+.xo-car-dot[aria-current="true"]{background:var(--xo-car-dot-active,#1a1a1a)}
+.xo-car-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.xo-car-track{scroll-behavior:auto}
+}

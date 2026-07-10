@@ -6,7 +6,9 @@ const SIZE_BUDGET = 3 * 1024 // 3 KB gzip hard limit for the CDN build
 
 await mkdir('dist', { recursive: true })
 
-const shared = { bundle: true, target: 'es2020' }
+// `.css` imports are inlined as text so a module can inject its own styles,
+// while the same file also ships standalone for no-JS / pre-rendered markup.
+const shared = { bundle: true, target: 'es2020', loader: { '.css': 'text' } }
 
 // ESM — for bundlers (they minify themselves)
 await build({
@@ -58,8 +60,8 @@ await build({
 // published package free of runtime dependencies.
 // The IIFE global must match the module's primary named export. Most modules
 // export XOframe<Name>; standalone-branded products (lightbox → XOlightbox) differ.
-const GLOBALS = { lightbox: 'XOlightbox', slider: 'XOslider' }
-for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility', 'lightbox', 'fonts', 'vitals', 'video', 'slider']) {
+const GLOBALS = { lightbox: 'XOlightbox', slider: 'XOslider', carousel: 'XOcarousel' }
+for (const name of ['embed', 'thumbhash', 'blurhash', 'masonry', 'skeleton', 'visibility', 'lightbox', 'fonts', 'vitals', 'video', 'carousel', 'slider']) {
   const globalName = GLOBALS[name] || 'XOframe' + name[0].toUpperCase() + name.slice(1)
   await build({
     ...shared,
@@ -100,6 +102,7 @@ const umd = `(function(root,factory){typeof define==='function'&&define.amd?defi
 await writeFile('dist/xoframe.umd.js', umd)
 
 await copyFile('styles/xoframe.css', 'dist/xoframe.css')
+await copyFile('styles/carousel.css', 'dist/xoframe-carousel.css')
 
 const min = await readFile('dist/xoframe.min.js')
 const gzipped = gzipSync(min).length

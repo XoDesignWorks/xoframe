@@ -293,31 +293,68 @@ Images sharing a `data-xo-lightbox` value form a group with prev/next and a coun
 Esc to close, ←/→ to navigate. Captions from `data-caption` or the thumbnail's `alt`. Neighbors
 are preloaded. Reduced motion disables the transition. `XOlightbox.close()` / `.destroy()` too.
 
-### XOslider
+### XOcarousel — horizontal & vertical
 
-`@xodesign/xoframe/slider` (~2.4 KB, separate entry) is a carousel where the **browser does the
-hard part**: native CSS `scroll-snap` provides momentum, touch and trackpad scrolling, so there is
-no animation loop, no transform math and no scroll listener. JS only adds arrows, dots, autoplay
-and active tracking (via `IntersectionObserver`, keeping INP low) — vs ~40 KB for Swiper.
+`@xodesign/xoframe/carousel` (~3.2 KB, separate entry) lets the **browser do the hard part**:
+native CSS `scroll-snap` provides momentum, touch and trackpad scrolling, so there is no animation
+loop, no transform math and no scroll listener. Active tracking uses `IntersectionObserver`,
+keeping INP low.
+
+| | XOcarousel | Embla | keen-slider | Splide | Swiper |
+| --- | --- | --- | --- | --- | --- |
+| Size (gzip) | **~3.2 KB** | ~7 KB | ~7 KB | ~27 KB | ~47 KB (~20 tree-shaken) |
+| Arrows/dots/ARIA included | **yes** | no (headless) | partial | yes | yes |
+| Scrolls without JS | **yes** (opt-in) | no | no | no | no |
+| WCAG 2.2.2 pause control | **yes** | no | no | no | no |
 
 ```html
-<div data-xo-slider>
+<div data-xo-carousel>
   <div><img data-xo data-src="1.jpg" width="1200" height="800" alt=""></div>
   <div><img data-xo data-src="2.jpg" width="1200" height="800" alt=""></div>
 </div>
 ```
 
 ```js
-import { XOslider } from '@xodesign/xoframe/slider'
-XOslider.init('[data-xo-slider]', {
-  slidesPerView: 1, gap: 16, arrows: true, dots: true, loop: true, autoplay: 0, label: 'Photos'
+import { XOcarousel } from '@xodesign/xoframe/carousel'
+
+XOcarousel.init('[data-xo-carousel]', {
+  axis: 'x',          // or 'y' for a vertical carousel
+  slidesPerView: 1, gap: 16,
+  height: '420px',    // vertical track height
+  arrows: true, dots: true, loop: true,
+  autoplay: 0,        // ms; 0 = off (the accessible default)
+  drag: true,         // mouse drag; touch/trackpad stay native
+  announce: true,     // live-region slide announcements
+  label: 'Photos'     // don't include the word "carousel"
 })
 ```
 
 Returns instances with `next()`, `prev()`, `goTo(i)`, `index`, `destroy()`, and fires a bubbling
-`xo:slide` event. Accessible by default (`role="region"`, `aria-roledescription="carousel"`,
-labelled slides, arrow keys). Autoplay pauses on hover/focus and when the tab is hidden; reduced
-motion disables autoplay and smooth scrolling. `loop` wraps at the ends (it does not clone slides).
+`xo:slide` event.
+
+**Accessibility.** Full carousel pattern: `role="region"` + `aria-roledescription="carousel"`,
+labelled slides, arrow-key navigation, and a polite live region announcing “Slide 2 of 5”.
+Autoplay is off by default; when enabled it ships a real **pause/play button**, pauses on hover and
+focus, and — as WCAG 2.2.2 requires — once the user presses pause it stays paused. Reduced motion
+disables autoplay and smooth scrolling.
+
+**Scrolling without JavaScript (opt-in).** Because the scrolling is pure CSS, link the stylesheet
+and pre-render the track, and the carousel is a usable snapping strip before (or without) JS —
+which then only upgrades it with arrows, dots and autoplay:
+
+```html
+<link rel="stylesheet" href="/node_modules/@xodesign/xoframe/dist/xoframe-carousel.css" data-xo-carousel-css>
+<div data-xo-carousel>
+  <div class="xo-car-track"><div>slide</div><div>slide</div></div>
+</div>
+```
+
+`loop` wraps at the ends rather than cloning slides.
+
+### XOslider (deprecated)
+
+`@xodesign/xoframe/slider` still works — it is XOcarousel defaulting to the old `[data-xo-slider]`
+selector. Migrate to `/carousel`; note the CSS classes changed (`.xo-slider-*` → `.xo-car-*`).
 
 ### Web font stability
 

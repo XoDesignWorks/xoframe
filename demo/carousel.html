@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XOcarousel — horizontal & vertical, 3.1 KB</title>
+  <link rel="stylesheet" href="../packages/core/dist/xoframe.css">
+  <link rel="stylesheet" href="demo.css">
+  <style>
+    [data-xo-carousel] img { width: 100%; height: 340px; object-fit: cover; border-radius: 8px; display: block; }
+    .vertical-wrap { max-width: 560px; }
+    .vertical-wrap img { height: 380px; }
+    .cards img { height: 200px; }
+    table.cmp { border-collapse: collapse; width: 100%; max-width: 700px; margin: 20px 0; }
+    table.cmp th, table.cmp td { text-align: left; padding: 9px 14px; border-bottom: 1px solid #e5e2dc; font-size: 14px; }
+    table.cmp td.win { color: #0a7d43; font-weight: 700; }
+    h3 { margin-top: 44px; }
+  </style>
+</head>
+<body>
+  <header class="site"><h1><a href="index.html">XOframe</a></h1><span>XOcarousel — horizontal &amp; vertical</span></header>
+  <main>
+    <h2>The browser does the hard part</h2>
+    <p class="note">Native CSS <code>scroll-snap</code> gives momentum, touch and trackpad scrolling
+    for free — no animation loop, no transform math, no scroll listener. JS only adds arrows, dots,
+    autoplay, mouse drag and active tracking (via IntersectionObserver, so INP stays low).
+    Because the scrolling itself is CSS, you can link <code>xoframe-carousel.css</code> and
+    pre-render the track to get a working snapping strip <strong>even with JS disabled</strong> —
+    JS then only upgrades it with arrows, dots and autoplay.</p>
+
+    <table class="cmp">
+      <tr><th>Library</th><th>Size (gzip)</th><th>Full UI</th><th>Scrolls without JS</th><th>Pause button (WCAG 2.2.2)</th></tr>
+      <tr><td><strong>XOcarousel</strong></td><td class="win">~3.2 KB</td><td class="win">yes</td><td class="win">yes (opt-in)</td><td class="win">yes</td></tr>
+      <tr><td>Embla</td><td>~7 KB</td><td>no (headless)</td><td>no</td><td>no</td></tr>
+      <tr><td>keen-slider</td><td>~7 KB</td><td>partial</td><td>no</td><td>no</td></tr>
+      <tr><td>Splide</td><td>~27 KB</td><td>yes</td><td>no</td><td>no</td></tr>
+      <tr><td>Swiper</td><td>~47 KB (~20 tree-shaken)</td><td>yes</td><td>no</td><td>no</td></tr>
+    </table>
+    <p class="note">Competitor sizes from published comparisons. “Full UI” means arrows, dots and
+    ARIA ship in the box rather than being left to you.</p>
+
+    <h3>Horizontal, autoplay + pause control</h3>
+    <p class="note">Autoplay is <em>off by default</em> (the accessible default). When enabled it
+    ships a real pause/play button, pauses on hover and focus, and once you press pause it
+    <strong>stays paused</strong> — as WCAG 2.2.2 requires. Drag it with the mouse.</p>
+    <div data-xo-carousel id="h1">
+      <div><img data-xo data-src="https://picsum.photos/seed/ca1/1200/700" data-color="#b8a88f" width="1200" height="700" alt="Slide 1"></div>
+      <div><img data-xo data-src="https://picsum.photos/seed/ca2/1200/700" data-color="#8fa3b8" width="1200" height="700" alt="Slide 2"></div>
+      <div><img data-xo data-src="https://picsum.photos/seed/ca3/1200/700" data-color="#a8918f" width="1200" height="700" alt="Slide 3"></div>
+      <div><img data-xo data-src="https://picsum.photos/seed/ca4/1200/700" data-color="#91a89f" width="1200" height="700" alt="Slide 4"></div>
+    </div>
+
+    <h3>Vertical axis</h3>
+    <p class="note">Same engine, <code>axis: 'y'</code> — snapping on the Y axis, arrows on top and
+    bottom, dots down the side. Use <kbd>↑</kbd>/<kbd>↓</kbd>.</p>
+    <div class="vertical-wrap">
+      <div data-xo-carousel id="v1">
+        <div><img data-xo data-src="https://picsum.photos/seed/cv1/900/700" data-color="#cabfae" width="900" height="700" alt="Vertical 1"></div>
+        <div><img data-xo data-src="https://picsum.photos/seed/cv2/900/700" data-color="#aec6ca" width="900" height="700" alt="Vertical 2"></div>
+        <div><img data-xo data-src="https://picsum.photos/seed/cv3/900/700" data-color="#c9aeca" width="900" height="700" alt="Vertical 3"></div>
+      </div>
+    </div>
+
+    <h3>Three per view</h3>
+    <div class="cards">
+      <div data-xo-carousel id="h2">
+        <div><img data-xo data-src="https://picsum.photos/seed/cc1/600/400" data-color="#cabfae" width="600" height="400" alt="Card 1"></div>
+        <div><img data-xo data-src="https://picsum.photos/seed/cc2/600/400" data-color="#aec6ca" width="600" height="400" alt="Card 2"></div>
+        <div><img data-xo data-src="https://picsum.photos/seed/cc3/600/400" data-color="#c9aeca" width="600" height="400" alt="Card 3"></div>
+        <div><img data-xo data-src="https://picsum.photos/seed/cc4/600/400" data-color="#c9c4ae" width="600" height="400" alt="Card 4"></div>
+        <div><img data-xo data-src="https://picsum.photos/seed/cc5/600/400" data-color="#aec9b4" width="600" height="400" alt="Card 5"></div>
+        <div><img data-xo data-src="https://picsum.photos/seed/cc6/600/400" data-color="#b4aec9" width="600" height="400" alt="Card 6"></div>
+      </div>
+    </div>
+
+    <p class="note" id="status" style="margin-top:24px">Active slide (horizontal): <strong>1</strong></p>
+  </main>
+
+  <script src="../packages/core/dist/xoframe.min.js"></script>
+  <script src="../packages/core/dist/xoframe-carousel.min.js"></script>
+  <script>
+    XOcarousel.init('#h1', { autoplay: 4000, label: 'Photos' })
+    XOcarousel.init('#v1', { axis: 'y', height: '380px', label: 'Vertical photos' })
+    XOcarousel.init('#h2', { slidesPerView: 3, gap: 16, loop: false, label: 'Product cards' })
+    XOframe.init()
+    document.addEventListener('xo:slide', (e) => {
+      if (e.target.id === 'h1') document.querySelector('#status strong').textContent = e.detail.index + 1
+    })
+  </script>
+</body>
+</html>

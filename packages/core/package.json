@@ -1,6 +1,6 @@
 {
   "name": "@xodesign/xoframe",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Zero-CLS progressive media loading. Reserve space, show placeholder, load smart, reveal smoothly — in ~2 KB.",
   "license": "MIT",
   "type": "module",
@@ -61,6 +61,11 @@
       "types": "./dist/video.d.ts",
       "import": "./dist/xoframe-video.esm.js"
     },
+    "./carousel": {
+      "types": "./dist/carousel.d.ts",
+      "import": "./dist/xoframe-carousel.esm.js"
+    },
+    "./carousel.css": "./dist/xoframe-carousel.css",
     "./slider": {
       "types": "./dist/slider.d.ts",
       "import": "./dist/xoframe-slider.esm.js"
@@ -94,7 +99,7 @@
   ],
   "scripts": {
     "build": "node build.mjs && tsc -p tsconfig.json",
-    "test": "node --test test/smoke.test.mjs test/placeholders.test.mjs test/masonry.test.mjs test/skeleton.test.mjs test/visibility.test.mjs test/lightbox.test.mjs test/fonts.test.mjs test/vitals.test.mjs test/embed.test.mjs test/video.test.mjs test/slider.test.mjs test/react.test.mjs",
+    "test": "node --test test/smoke.test.mjs test/placeholders.test.mjs test/masonry.test.mjs test/skeleton.test.mjs test/visibility.test.mjs test/lightbox.test.mjs test/fonts.test.mjs test/vitals.test.mjs test/embed.test.mjs test/video.test.mjs test/carousel.test.mjs test/slider.test.mjs test/react.test.mjs",
     "prepublishOnly": "npm run build && npm test"
   },
   "repository": {
